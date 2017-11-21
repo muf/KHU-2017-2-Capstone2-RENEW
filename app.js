@@ -1,7 +1,7 @@
-var serverSelection = 'clientApp'
-// load custom modules
-  // server configurations
+
+// load server configurations
 var conf = require('./conf/main').get(process.env.NODE_ENV).server.conf
+console.log(conf)
 
 // load node modules
 var express = require('express')
@@ -33,11 +33,9 @@ app.use(function(err, req, res, next) {
 // connect sub apps
 
 // listen application
-
 app.listen(conf.server.port, function(){
   console.log("Application [ %s ]Running on %s port", conf.server.name, conf.server.port);
 });
-
 
 
 
