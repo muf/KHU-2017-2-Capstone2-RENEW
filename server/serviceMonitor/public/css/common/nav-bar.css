@@ -4,3 +4,9 @@
  .navbar{
      background-color:#e7f3f5!important;
  }
+ .navbar-menu ul{
+     margin-left:200px
+ }
+ .navbar-menu li{
+     margin-left:50px
+ }

@@ -23,5 +23,9 @@ var serviceApplicationSchema = new mongoose.Schema({
         number : {type: String, default: "" },
     },
     state: { type: String, default: 'applied' }, // 'submit / finished / denied / applied'
+    server: {
+        ip: { type: String, default: '0.0.0.0' },
+        port: { type: String, default: '3005' }
+    }
 });
 module.exports = mongoose.model('serviceApplication',serviceApplicationSchema);

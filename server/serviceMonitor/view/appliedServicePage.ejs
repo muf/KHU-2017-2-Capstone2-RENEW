@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<title> AP in the Sky(Service Monitor Application)</title>
+  <% include ./common/header.ejs %>
+    <!-- Custom CSS -->
+    <link rel='stylesheet' href='/css/common/nav-bar.css' />
+    <link rel='stylesheet' href='/css/appliedServicePage/appliedServicePage.css' />
+   
+     <!--JS --> 
+    <script src="/javascripts/appliedServicePage/appliedServicePage.js"></script>
+    <!-- datetime picker assets -->   
+    <script type="text/javascript" src="/bower_components/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="/bower_components/moment/min/moment.min.js"></script>
+    <script type="text/javascript" src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
+    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" />
+
+
+  </head>
+  <body>  
+    <% include ./common/nav-bar.ejs %>
+
+    <div id="main-container">
+        <!-- #table-container>#1 -->
+        <div id="head-container" class = "container">
+          서비스 신청 관리 페이지
+        </div>
+      <!-- #table-container>#2 -->
+      <div id="table-container" class = "container">
+        <table class="table table-fixed">
+          <thead>  
+            <tr>
+              <th>오브젝트 아이디</th>
+              <th>서비스 시작 시점</th>
+              <th>서비스 종료 시점</th>
+              <th>최소 드론 수</th>
+              <th>최대 드론 수</th>
+              <th>현재 드론 수</th>
+              <th>서버 주소</th>
+              <th>서버 포트</th>
+              <th>이메일</th>
+              <th>전화번호</th>
+              <th>상태</th>
+            </tr>
+          </thead>
+          <tbody>
+              <tr>
+                  <td>ok</td>
+                  <td>ok</td>
+                  <td>ok</td>
+                  <td>ok</td>
+                  <td>ok</td>
+                  <td>ok</td>
+                  <td>ok</td>
+                  <td>ok</td>
+                  <td>ok</td>
+                  <td>ok</td>
+                  <td>ok</td>
+              </tr>
+              <tr>
+                  <td>ok</td>
+                  <td>ok</td>
+                  <td>ok</td>
+                  <td>ok</td>
+                  <td>ok</td>
+                  <td>ok</td>
+                  <td>ok</td>
+                  <td>ok</td>
+                  <td>ok</td>
+                  <td>ok</td>
+                  <td>ok</td>
+              </tr>
+              <tr>
+                  <td>ok</td>
+                  <td>ok</td>
+                  <td>ok</td>
+                  <td>ok</td>
+                  <td>ok</td>
+                  <td>ok</td>
+                  <td>ok</td>
+                  <td>ok</td>
+                  <td>ok</td>
+                  <td>ok</td>
+                  <td>ok</td>
+              </tr>
+          </tbody>
+        </table>
+      </div><!-- table container -->
+    </div> <!-- main container  -->
+  </body>
+</html>

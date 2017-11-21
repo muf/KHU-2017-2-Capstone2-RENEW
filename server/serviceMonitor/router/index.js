@@ -9,13 +9,13 @@ dir.set('private', __dirname +"/../private/")
 // @redirect
 router.get('/',function(req, res, next) {
   console.log('get /');
-  res.redirect('/registerPage')
+  res.redirect('/submitServicePage')
 });
 
 // @render
 router.get('/main',function(req, res, next) {
   console.log('get /main');
-  res.redirect('/registerPage')
+  res.redirect('/submitServicePage')
 });
 
 router.get('/index',function(req, res, next) {
@@ -23,9 +23,14 @@ router.get('/index',function(req, res, next) {
   res.render(dir.get('view') + '/index.ejs');
 });
 
-router.get('/registerPage',function(req, res, next) {
-  console.log('get /registerPage');
-  res.render(dir.get('view') + '/registerPage.ejs');
+router.get('/submitServicePage',function(req, res, next) {
+  console.log('get /submitServicePage');
+  res.render(dir.get('view') + '/submitServicePage.ejs');
+});
+
+router.get('/appliedServicePage',function(req, res, next) {
+  console.log('get /appliedServicePage');
+  res.render(dir.get('view') + '/appliedServicePage.ejs');
 });
 
 // @ajax GET

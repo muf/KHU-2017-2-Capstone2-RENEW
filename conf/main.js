@@ -1,10 +1,7 @@
 // 전체 config 중 하나를 선택해서 사용
 var tool = require('cloneextend'), conf = {};
 
-// var clientAppConf = require('./server/clientApp.js').get(process.env.NODE_ENV);
-// var dataGeneratorConf = require('./server/dataGenerator.js').get(process.env.NODE_ENV);
-// var serviceMonitorConf = require('./server/serviceMonitor').get(process.env.NODE_ENV);
-var serverName = 'clientApp'
+var serverName = 'serviceMonitor'
 
 conf.defaults = {
     server : {
