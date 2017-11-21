@@ -41,6 +41,9 @@ this.util = {
   realLngMeter : function(meter){
       return meter * 0.000011335555
   },
+  toPyeongArea : function(area){
+    return area * 0.3025 
+  },
   distanceTo : function(lat1,lon1,lat2,lon2) {
     var deg2rad = this.deg2rad
     var R = 6371; // Radius of the earth in km

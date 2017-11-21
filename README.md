@@ -15,3 +15,6 @@
 
 ## color picker
 - https://www.w3schools.com/colors/colors_picker.asp
+
+## boot strap 
+- https://v4-alpha.getbootstrap.com/components/buttons/

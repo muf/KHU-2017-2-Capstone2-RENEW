@@ -16,8 +16,36 @@
     background-color:#aed3ec;
     z-index:12;
 }
-#side-sample-container{
+#side-areaInfo-container{
     margin-left:20px;
     margin-top:20px;
     margin-bottom:20px;
+}
+#side-areaInfo-container .areaInfo-h4 {
+    margin-left:20px;
+    color:#5a5353;
+}
+
+textarea.areaInfo-h6 {
+    width:250px;
+    height:100px;
+    overflow:visible;
+    resize:none;
+    font-size:15px;
+    overflow:hidden;
+    /* #background-color:#8ac4d6!important; */
+}
+
+#side-table-container{
+    margin-left:20px;
+    margin-top:20px;
+    margin-bottom:20px;
+}
+#side-button-container{
+    margin-left:50px;
+    margin-top:20px;
+    margin-bottom:20px;
+}
+#side-button-container .btn{
+    margin-right : 30px;
 }
