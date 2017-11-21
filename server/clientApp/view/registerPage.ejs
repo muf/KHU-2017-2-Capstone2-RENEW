@@ -10,9 +10,16 @@
    
      <!--JS -->
     <script src="/javascripts/common/map.js"></script>      
-    <script src="/javascripts/common/mapHandlerObject.js"></script>
+    <script src="/javascripts/common/mapHandlerObject.js"></script>  
     <script src="/javascripts/registerPage/mapEventWrapper.js"></script> 
-    <script src="/javascripts/registerPage/registerPage.js"></script>   
+    <script src="/javascripts/registerPage/registerPage.js"></script>
+    <!-- datetime picker assets -->   
+    <script type="text/javascript" src="/bower_components/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="/bower_components/moment/min/moment.min.js"></script>
+    <script type="text/javascript" src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
+    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" />
 
 
   </head>
@@ -42,6 +49,7 @@
                       <textarea class="form-control areaInfo-h6" rows="3" id="areaInfo-size" readonly></textarea>
                     </div>
                   </form>
+            </div>
             <div>
                 <form>
                     <div class="form-group">
@@ -60,14 +68,92 @@
               </thead>
 
               <tbody>
-                <tr>
-                  <td>
-                    시간
-                  </td>
-                  <td>
-                    오키
-                  </td>
-                </tr>
+                  <tr>
+                      <td>
+                        <form>
+                          <div class="form-group">
+                              <label for="service-start-date">시작 시간: (필수)</label>
+                              <div class='input-group date' id='service-start-date' placeholder="필수 입력란">
+                                  <input type='text' class="form-control" />
+                                  <span class="input-group-addon">
+                                      <span class="glyphicon glyphicon-calendar"></span>
+                                  </span>
+                              </div>
+                          </div>
+                      </div>
+                      <script type="text/javascript">
+                          $(function () {
+                              var defaultDate = new Date()
+                              defaultDate = defaultDate.setTime(defaultDate.getTime()+300000)
+                              $('#service-start-date').datetimepicker({defaultDate: defaultDate});
+                          });
+                      </script>
+                        </form>
+                      </td>
+                  </tr>
+                  <tr>
+                      <td>
+                        <form>
+                          <div class="form-group">
+                              <label for="service-end-date">종료 시간: (필수)</label>
+                              <div class='input-group date' id='service-end-date' placeholder="필수 입력란">
+                                  <input type='text' class="form-control" />
+                                  <span class="input-group-addon">
+                                      <span class="glyphicon glyphicon-calendar"></span>
+                                  </span>
+                              </div>
+                          </div>
+                      </div>
+                      <script type="text/javascript">
+                          $(function () {
+                              var defaultDate = new Date()
+                              defaultDate = defaultDate.setTime(defaultDate.getTime()+300000+3600000)
+                            $('#service-end-date').datetimepicker({defaultDate: defaultDate});
+                          });
+                      </script>
+                        </form>
+                      </td>
+                  </tr>
+                  <tr>
+                      <td>
+                          <form>
+                              <div class="form-group">
+                                <label for="drone-min">drone min 값:</label>
+                                <input type="text" class="form-control" id="drone-min">
+                              </div>
+                            </form>
+                      </td>
+                  </tr>
+                  <tr>
+                      <td>
+                          <form>
+                              <div class="form-group">
+                                <label for="drone-max">drone max 값:</label>
+                                <input type="text" class="form-control" id="drone-max">
+                              </div>
+                            </form>
+                      </td>
+                  </tr>
+                  <tr>
+                      <td>
+                          <form>
+                              <div class="form-group">
+                                <label for="email">email:</label>
+                                <input type="text" class="form-control" id="email">
+                              </div>
+                            </form>
+                      </td>
+                  </tr>
+                  <tr>
+                      <td>
+                          <form>
+                              <div class="form-group">
+                                <label for="contact-number">contact number:</label>
+                                <input type="text" class="form-control" id="contact-number">
+                              </div>
+                            </form>
+                      </td>
+                  </tr>
               </tbody>
 
             </table>
@@ -79,7 +165,7 @@
           </div><!-- side button container -->
 
         </div><!-- side container -->
-      </div> <!-- main container  -->
+    </div> <!-- main container  -->
     
      <!-- div id = map 을 찾기 때문에 div map 뒤에 호출해야 한다. -->
     <!--등록된 key를 이용해서 구글 API 요청. 추가로 libraries=places 라이브러리 호출. callback=initMap-->

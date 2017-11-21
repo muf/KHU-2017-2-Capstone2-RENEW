@@ -9,15 +9,16 @@
 #side-container{
     right:0px;
     width:330px;
-    height:100%;
+    height:95%;
     float:right;
     position:fixed;
     opacity:0.8;
     background-color:#aed3ec;
     z-index:12;
+    overflow:scroll; 
 }
 #side-areaInfo-container{
-    margin-left:20px;
+    margin-left:30px;
     margin-top:20px;
     margin-bottom:20px;
 }
@@ -28,10 +29,10 @@
 
 textarea.areaInfo-h6 {
     width:250px;
-    height:100px;
+    height:50px;
     overflow:visible;
     resize:none;
-    font-size:15px;
+    font-size:12px;
     overflow:hidden;
     /* #background-color:#8ac4d6!important; */
 }
