@@ -1,0 +1,46 @@
+
+
+/*L4*/    
+#side-sample-container{
+    
+    background-color:#f2f9e0;
+    width : 80%;
+    margin : auto;
+    margin-top:20px;
+}
+/*L4*/    
+#side-button-container{
+    
+    background-color:#f2f9e0;
+    width : 80%;
+    margin : auto;
+    margin-top:20px;
+
+}
+#side-table-container{
+    background-color:#f2f9e0;
+    width : 80%;
+    margin : auto;
+    margin-top:20px;
+}
+/*L5*/ 
+#add-coords{
+    width : 50px;
+    margin-top:20px;
+    margin-bottom:20px;
+    margin-left:65%;
+}
+#apply{
+
+}
+
+/* ?? */
+.coords{
+    width:80%;
+    margin-bottom:5px;
+    margin-left:25px
+}
+
+
+
+

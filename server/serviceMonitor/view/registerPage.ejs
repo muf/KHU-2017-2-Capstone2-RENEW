@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<title> Multi-Coords Mapping</title>
+  <% include ./common/header.ejs %>
+    <!-- Custom CSS -->
+    <link rel='stylesheet' href='/css/common/nav-bar.css' />
+    <link rel='stylesheet' href='/css/registerPage/registerPage.css' />
+    <link rel='stylesheet' href='/css/common/map.css' />
+   
+     <!--JS -->
+    <script src="/javascripts/common/map.js"></script>   
+    <script src="/javascripts/common/mapHandlerObject.js"></script>   
+
+  </head>
+  <body>  
+    <% include ./common/nav-bar.ejs %>
+
+    <div id="main-container">
+      <!-- #map-container>#1 -->
+      <div id="map-container">
+        <div id="map"></div>
+      </div>
+      <!-- #side-container>#2 -->
+      <div id="side-container">
+          <div id = "side-sample-container">
+            <div>
+              <span class = "sample-span">sample1</span><br>
+              [{"lat":33.42883,"long":126.8564},{"lat":33.425,"long":126.7558}]
+            </div>
+            <div>
+              <span class = "sample-span">sample2</span><br>
+              [{33.4839,126.6202},{33.4839,126.6210}]
+            </div>
+            <div>
+              <span class = "sample-span">sample2</span><br>
+              [(37.5983,:126.7975),(33.5004,126.5076)]
+            </div>
+
+          </div>
+          <div id ="side-button-container">
+            <button id="add-coords"> +  </button>
+            <button id="apply" class="apply"> 적용  </button>
+          </div><!--  -->
+
+          <div id ="side-table-container">  
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Num</th>
+                  <th>Coords</th>
+                  <th>Regex</th>
+                </tr>
+              </thead>
+
+              <tbody>
+              </tbody>
+
+            </table>
+          </div><!-- search-container-apply -->
+        </div><!--  -->
+      </div> <!--  -->
+    
+     <!-- div id = map 을 찾기 때문에 div map 뒤에 호출해야 한다. -->
+    <!--등록된 key를 이용해서 구글 API 요청. 추가로 libraries=places 라이브러리 호출. callback=initMap-->
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBzSqxdqbzLyC57PF_vX4zyvvN4O_C0F4w&libraries=places&callback=initMap"></script>
+   <!-- map과 과련된 script들도 뒤에 호출해야 한다. -->
+    <!-- <script src="/javascripts/side/test_side.js"></script>
+    <script src="/javascripts/side/side.js"></script> -->
+    
+   
+    
+  </body>
+</html>
