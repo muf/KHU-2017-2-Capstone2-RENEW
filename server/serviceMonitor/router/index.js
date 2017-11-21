@@ -15,6 +15,11 @@ router.get('/',function(req, res, next) {
 // @render
 router.get('/main',function(req, res, next) {
   console.log('get /main');
+  res.redirect('/registerPage')
+});
+
+router.get('/index',function(req, res, next) {
+  console.log('get /index');
   res.render(dir.get('view') + '/index.ejs');
 });
 

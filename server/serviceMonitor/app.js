@@ -7,10 +7,12 @@ module.exports = function(conf) {
             var express = require('express')
             var path = require('path');
             var bodyParser = require('body-parser');
+            var mongoose    = require('mongoose');
 
             // load router sub apps
             var index_router = require('./router/index')
-
+            var dataAccess_router = require('./router/dataAccess')
+            
             // make instances
             var app = express()
 
@@ -23,9 +25,10 @@ module.exports = function(conf) {
                 // 이렇게 해두면 public 밑에만 static 하게 접근되고, 이보다 부모 디렉토리이거나 형제 디렉토리인 경우 임의로 접근이 불가. 보안 관리 측면의 옵션이라고 볼 수도 있다.
                 // 단 ejs의 경로를 제어 하는 것이니 헷갈리지 마시길
             app.use(bodyParser.json()); // parse body of response to json 
-            app.use(bodyParser.urlencoded({ extended: false })); // parse the text as url encoded data. [false]:parse only once. [true]:parse every time (?????)
+            app.use(bodyParser.urlencoded({ extended: true })); // parse the text as url encoded data. [false]:parse only once. [true]:parse every time (?????)
                 // register rounter sub apps
             app.use('/', index_router) 
+            app.use('/', dataAccess_router) 
             
             // use error check
             app.use(function(err, req, res, next) {
