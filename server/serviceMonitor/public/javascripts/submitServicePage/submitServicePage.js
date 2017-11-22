@@ -9,8 +9,9 @@ function addTableEvents(){
 
 
     $('#table-container tbody tr').dblclick(function(event){
-        if(confirm("안녕하십니까?")==true){
+        if(confirm("안녕하십니d까?")==true){
 
+          location.reload(); // @@@ 심심하니까 다시 갱신 ㅎㅎ
         }
       })
 }

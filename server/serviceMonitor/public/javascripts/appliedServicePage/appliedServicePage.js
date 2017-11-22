@@ -24,10 +24,12 @@ function addTableEvents(){
                 {
                     //data - response from server
                     alert("서비스 등록에 성공하였습니다.") 
+                    location.reload(); // 성공 시 다시 로드하여 페이지를 갱신한다.                    
                 },
                 error: function (jqXHR, textStatus, errorThrown)
                 {
-                    alert("서비스 등록에 실패하였습니다.")
+                    alert("서비스 등록에 실패하였습니다.")   
+                    location.reload(); // 실패 시 다시 로드하여 페이지를 갱신한다.    
                 }
             });
         }
