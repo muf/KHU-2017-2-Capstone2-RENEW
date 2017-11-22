@@ -7,10 +7,13 @@
     color:#56a3e4;
 }
 #table-container{
-    width:80%;
+    width:90%;
     height:80%;
     margin:auto;
 }
 #table-container tbody tr:hover{
     background-color:#b6e6a2;
+}
+#table-container .table-data{
+    width:200px;
 }

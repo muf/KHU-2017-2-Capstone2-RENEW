@@ -15,3 +15,12 @@ function addTableEvents(){
         }
       })
 }
+
+function convertTimeFormat(form){
+  var al = $('#table-container tbody tr')
+  for( idx = 0; idx < al.length; idx++){
+    for( jdx = 1; jdx <= 3; jdx++){
+     al[idx].getElementsByTagName('td')[jdx].innerHTML = new Date(al[idx].getElementsByTagName('td')[jdx].innerHTML).format(form)
+   }
+  }
+}
