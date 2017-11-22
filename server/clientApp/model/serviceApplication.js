@@ -16,12 +16,26 @@ var serviceApplicationSchema = new mongoose.Schema({
     },
     drone:{
         min : { type: Number, default: 0 },
-        max : { type: Number, default: 0 }
+        max : { type: Number, default: 0 },
+        current :{type: Number, default: 0},
+        list : [{
+            id: Number,
+            ip: String
+        }]
     },
     contact:{
         email : { type: String, default: "" },
         number : {type: String, default: "" },
     },
     state: { type: String, default: 'applied' }, // 'submit / finished / denied / applied'
+    server: {
+        ip: { type: String, default: '0.0.0.0' },
+        port: { type: String, default: '3005' }
+    }
 });
+
+serviceApplicationSchema.statics.findAppliedServices = function(element) {
+    return this.find({ state: new RegExp('applied', 'i') }, element);
+  };
+  
 module.exports = mongoose.model('serviceApplication',serviceApplicationSchema);

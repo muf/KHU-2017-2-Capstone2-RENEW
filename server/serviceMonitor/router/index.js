@@ -23,16 +23,6 @@ router.get('/index',function(req, res, next) {
   res.render(dir.get('view') + '/index.ejs');
 });
 
-router.get('/submitServicePage',function(req, res, next) {
-  console.log('get /submitServicePage');
-  res.render(dir.get('view') + '/submitServicePage.ejs');
-});
-
-router.get('/appliedServicePage',function(req, res, next) {
-  console.log('get /appliedServicePage');
-  res.render(dir.get('view') + '/appliedServicePage.ejs');
-});
-
 // @ajax GET
 // @ajax POST
 

@@ -1,5 +1,6 @@
 
 // conf를 받아서 run() 함수를 적절하게 실행시킬 수 있는 함수 객체를 반환
+
 module.exports = function(conf) {
     return {
         run: function(){
@@ -9,10 +10,13 @@ module.exports = function(conf) {
             var bodyParser = require('body-parser');
             var mongoose    = require('mongoose');
 
+            var http = require('http')
+
             // load router sub apps
             var index_router = require('./router/index')
             var dataAccess_router = require('./router/dataAccess')
-            
+            var appliedService_router = require('./router/appliedServicePage')
+            var submitServicePage_router = require('./router/submitServicePage')
             // make instances
             var app = express()
 
@@ -29,6 +33,8 @@ module.exports = function(conf) {
                 // register rounter sub apps
             app.use('/', index_router) 
             app.use('/', dataAccess_router) 
+            app.use('/', appliedService_router)
+            app.use('/', submitServicePage_router)
             
             // use error check
             app.use(function(err, req, res, next) {
@@ -40,9 +46,8 @@ module.exports = function(conf) {
 
             // listen application
             app.listen(conf.server.port, function(){
-            console.log("Application [ %s ] is Running on %s port", conf.server.name, conf.server.port);
+                console.log("Application [ %s ] is Running on %s port", conf.server.name, conf.server.port);
             });
-
         }
     };
 }

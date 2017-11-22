@@ -16,7 +16,12 @@ var serviceApplicationSchema = new mongoose.Schema({
     },
     drone:{
         min : { type: Number, default: 0 },
-        max : { type: Number, default: 0 }
+        max : { type: Number, default: 0 },
+        current :{type: Number, default: 0},
+        list : [{
+            id: Number,
+            ip: String
+        }]
     },
     contact:{
         email : { type: String, default: "" },
@@ -28,4 +33,9 @@ var serviceApplicationSchema = new mongoose.Schema({
         port: { type: String, default: '3005' }
     }
 });
+
+serviceApplicationSchema.statics.findServicesByState = function(state, element) {
+    return this.find({ state: new RegExp(state, 'i') }, element);
+  };
+  
 module.exports = mongoose.model('serviceApplication',serviceApplicationSchema);

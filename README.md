@@ -21,3 +21,17 @@
 
 ## boot strap 
 - https://v4-alpha.getbootstrap.com/components/buttons/
+
+## 서버 실행 commands
+```
+node app --config=clientApp // clientApp 실행.
+ps -ef | grep app.js // app.js 실행 중인  node app들 조회
+ps -ef | awk '/app.js/{print $2}' | xargs -I{} lsof -Pan -p {} -i // app.js 실행 중인 node app들의 포트를 조회
+```
+#### 포트
+- clientApp :  3000 (고정)
+- dataGenerator : 3001 (고정)
+- serviceMonitor : 3002 (고정)
+- serviceExecutor : (동적 할당)
+ - serviceExecutor에서는 
+            console.log(process.debugPort)를 출력 하여 포트를 알려줄 수 있다.

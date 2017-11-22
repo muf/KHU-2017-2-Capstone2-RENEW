@@ -1,0 +1,6 @@
+#!/bin/bash
+BASE='/Users/junghyun.park/Desktop/git/KHU-2017-2-Capstone2-RENEW/'
+APP=$1
+cd ../
+echo $APP
+node $BASE/app.js --config=$APP
