@@ -33,5 +33,5 @@ ps -ef | awk '/app.js/{print $2}' | xargs -I{} lsof -Pan -p {} -i // app.js 실�
 - dataGenerator : 3001 (고정)
 - serviceMonitor : 3002 (고정)
 - serviceExecutor : (동적 할당)
- - serviceExecutor에서는 
-            console.log(process.debugPort)를 출력 하여 포트를 알려줄 수 있다.
+ - serviceExecutor에서는 console.log(process.debugPort)를 출력 하여 포트를 알려줄 수 있다. -> (잘못된 정보. 이건 진짜 debugPort임)
+ - var port = this.address().port (app.address() - server.http TYPE)로 확인 가능

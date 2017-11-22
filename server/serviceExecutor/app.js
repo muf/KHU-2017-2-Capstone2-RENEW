@@ -10,8 +10,6 @@ module.exports = function(conf) {
             var mongoose    = require('mongoose');
 
             // load router sub apps
-            var index_router = require('./router/index')
-            var dataAccess_router = require('./router/dataAccess')
             
             // make instances
             var app = express()
@@ -27,9 +25,6 @@ module.exports = function(conf) {
             app.use(bodyParser.json()); // parse body of response to json 
             app.use(bodyParser.urlencoded({ extended: true })); // parse the text as url encoded data. [false]:parse only once. [true]:parse every time (?????)
                 // register rounter sub apps
-            app.use('/', index_router) 
-            app.use('/', dataAccess_router) 
-            
             // use error check
             app.use(function(err, req, res, next) {
             console.log("ERROR : APP.JS");
@@ -40,10 +35,10 @@ module.exports = function(conf) {
 
             // listen application
             app.listen(function(){
-                var port = process.debugPort
+                var port = this.address().port
+                console.log(port)
                 console.log("Application [ %s ] is Running on %s port", conf.server.name, port);
-            });
-
+            })
             // @@@ test mode : 좀 실행하다가 죽으면 된다.
 
         }
