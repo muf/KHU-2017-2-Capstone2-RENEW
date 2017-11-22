@@ -39,9 +39,12 @@ module.exports = function(conf) {
             // connect sub apps
 
             // listen application
-            app.listen(conf.server.port, function(){
-            console.log("Application [ %s ] is Running on %s port", conf.server.name, conf.server.port);
+            app.listen(function(){
+                var port = process.debugPort
+                console.log("Application [ %s ] is Running on %s port", conf.server.name, port);
             });
+
+            // @@@ test mode : 좀 실행하다가 죽으면 된다.
 
         }
     };
