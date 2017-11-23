@@ -5,7 +5,6 @@ var executorSchema = new mongoose.Schema({
     port: { type: String, default: '0000' },
     drones: { droneId: Number },
     state: { type: String, default: 'ready' }, // ready(submit), running(executed), finished
-    executors:[{executorId: Number, serviceStartDate: Date, serviceEndDate: Date,}],
     storage: {
         userData: {
             blobId: Number

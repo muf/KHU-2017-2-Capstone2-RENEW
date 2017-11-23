@@ -49,6 +49,16 @@ function getServicesByState(req, res, state, callback){
         }
     }, res)
 }
+function getServiceById(req, res, callback){
+    serviceApplication.findOne({
+         _id: req.body.serviceId
+    },function(err, service){
+        if(typeof callback === 'function') {
+            if(err) return callback(err, res, service)
+            else return callback(undefined, res, service)
+        }
+    }, res)
+}
 function updateService(req, res, callback){
     serviceApplication.update( {
         _id: req.body.objectId            
@@ -63,6 +73,7 @@ function updateService(req, res, callback){
 }
 
 module.exports.getServicesByState = getServicesByState
+module.exports.getServiceById = getServiceById
 module.exports.updateService = updateService
 module.exports.putService = putService
 module.exports.putDrone = putDrone

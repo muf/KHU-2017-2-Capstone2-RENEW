@@ -54,17 +54,22 @@ function applyService(){
         alert("연락처를 하나 이상 입력해 주세요.")
         return 
     }
+    else if($('#drone-num').val()=="" ){
+        alert("드론 수를 입력해 주세요")
+        return 
+    }
     var serviceStartDate = $('#service-start-date').data("DateTimePicker").date()._d
     var serviceEndDate = $('#service-end-date').data("DateTimePicker").date()._d
     // @@@ 여기 좀 바꿔야함..
-    var droneMin = $('#drone-min').val()
-    var droneMax = $('#drone-max').val()
-    // 값이 정상적이지 않은 경우 교정 진행
-    if(droneMax < droneMin){
-        var temp = droneMin
-        droneMin = droneMax
-        droneMax = temp
-    }
+    var droneNum = $('#drone-num').val()
+    // var droneMin = $('#drone-min').val()
+    // var droneMax = $('#drone-max').val()
+    // // 값이 정상적이지 않은 경우 교정 진행
+    // if(droneMax < droneMin){
+    //     var temp = droneMin
+    //     droneMin = droneMax
+    //     droneMax = temp
+    // }
     if(serviceStartDate > serviceEndDate){
         var temp = serviceStartDate
         serviceStartDate = serviceEndDate
@@ -91,15 +96,13 @@ function applyService(){
             lng : app.area.bounds.b.f,
         }
     }
-    
     $.ajax({
         url : "http://localhost:3002/createServiceApplication",
         type: "POST",
         data : {
             serviceStartDate:serviceStartDate,
             serviceEndDate:serviceEndDate,
-            droneMin:droneMin,
-            droneMax:droneMax,
+            droneNum:droneNum,
             email:email,
             contactNumber:contactNumber,
             bounds : bounds

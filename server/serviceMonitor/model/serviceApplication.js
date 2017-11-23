@@ -15,6 +15,7 @@ var serviceApplicationSchema = new mongoose.Schema({
         }
     },
     drone:{
+        num : { type: Number, default: 0 },
         min : { type: Number, default: 0 },
         max : { type: Number, default: 0 },
         current :{type: Number, default: 0},
@@ -31,7 +32,8 @@ var serviceApplicationSchema = new mongoose.Schema({
     server: {
         ip: { type: String, default: '0.0.0.0' },
         port: { type: String, default: '3005' }
-    }
+    },
+    executorId: Number
 });
 
 serviceApplicationSchema.statics.findByState = function(state, element) {

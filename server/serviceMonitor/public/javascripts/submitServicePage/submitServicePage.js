@@ -9,10 +9,12 @@ function addTableEvents(){
 
     $('#table-container tbody tr').dblclick(function(event){
         if(confirm("serviceExecutor을 실행하시겠어요?")==true){
-
+        var tr = event.currentTarget
+        var objectId = tr.getElementsByTagName('td')[0].innerHTML
           $.ajax({
-            url : "/newServiceRequest",
-            type: "GET",
+            url : "/executeService",
+            type: "POST",
+            data:{serviceId:objectId},
             headers: {
               'Cache-Control': 'no-cache'
             },

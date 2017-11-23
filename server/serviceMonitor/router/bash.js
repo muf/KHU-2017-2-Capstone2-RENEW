@@ -10,16 +10,23 @@ var bash = require(dir.get('private') + 'javascript/common/bash.js')
 
 // @ handle bash requests
 router.get('/newServiceRequest',function(req, res, next) {
-    console.log('get /newServiceRequest@')
+  var testmode = true
+
+  // executor 실행
+  if(!testmode){
     var basePath = '/Users/junghyun.park/Desktop/git/KHU-2017-2-Capstone2-RENEW'
     var path = '/sh_scripts/'
     var query = basePath + path + 'runse'
     bash.run(query, function(pid){
-      console.log("123")
       console.log(pid)
       res.end();
     })
-  });
+  }
+  else{
+    res.end();
+  }
+})
+    
 
   // @app use
 app.use(function(err, req, res, next) {
