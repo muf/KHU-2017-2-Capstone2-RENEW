@@ -21,21 +21,20 @@ var serviceApplication = require('../model/serviceApplication')
 
 // @ajax POST
 // // serviceApplication 생성
-router.
-post('/createServiceApplication', function(req, res) {
-    serviceApplication.create( {
-            serviceStartDate: req.body.serviceStartDate,
-            serviceEndDate: req.body.serviceEndDate,
-            drone:{min: req.body.droneMin, max: req.body.droneMax},
-            contact:{email: req.body.email, number: req.body.contactNumber},
-            bounds:req.body.bounds
+// router.post('/createServiceApplication', function(req, res) {
+//     serviceApplication.create( {
+//             serviceStartDate: req.body.serviceStartDate,
+//             serviceEndDate: req.body.serviceEndDate,
+//             drone:{min: req.body.droneMin, max: req.body.droneMax},
+//             contact:{email: req.body.email, number: req.body.contactNumber},
+//             bounds:req.body.bounds
             
-		},
-        function(err, serviceApplication) {
-            if (err) return res.status(500).send("serviceApplication 생성 실패.");
-            res.status(200).send(serviceApplication); // ? 뭘 보내는 거냐 // {"__v":0,"serviceStartDate":"2017-11-21T12:04:02.687Z","serviceEndDate":"2017-11-21T12:04:02.687Z","_id":"5a141632a8b0e03f802cef20","state":"applied","contact":{"email":"","number":""},"drone":{"max":0,"min":0},"bounds":{"max":{"lng":0,"lat":0},"min":{"lng":0,"lat":0}},"loggingDate":"2017-11-21T12:04:02.688Z"}
-        });
-});
+// 		},
+//         function(err, serviceApplication) {
+//             if (err) return res.status(500).send("serviceApplication 생성 실패.");
+//             res.status(200).send(serviceApplication); // ? 뭘 보내는 거냐 // {"__v":0,"serviceStartDate":"2017-11-21T12:04:02.687Z","serviceEndDate":"2017-11-21T12:04:02.687Z","_id":"5a141632a8b0e03f802cef20","state":"applied","contact":{"email":"","number":""},"drone":{"max":0,"min":0},"bounds":{"max":{"lng":0,"lat":0},"min":{"lng":0,"lat":0}},"loggingDate":"2017-11-21T12:04:02.688Z"}
+//         });
+// });
 
 
   

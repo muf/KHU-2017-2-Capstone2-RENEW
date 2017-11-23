@@ -93,7 +93,7 @@ function applyService(){
     }
     
     $.ajax({
-        url : "/createServiceApplication",
+        url : "http://localhost:3002/createServiceApplication",
         type: "POST",
         data : {
             serviceStartDate:serviceStartDate,

@@ -5,6 +5,8 @@ module.exports = function(conf) {
     return {
         run: function(){
             // load node modules
+            var cors = require('cors');
+            
             var express = require('express')
             var path = require('path');
             var bodyParser = require('body-parser');
@@ -14,10 +16,9 @@ module.exports = function(conf) {
 
             // load router sub apps
             var index_router = require('./router/index')
-            var dataAccess_router = require('./router/dataAccess')
-            var appliedService_router = require('./router/appliedServicePage')
-            var submitService_router = require('./router/submitServicePage')
-            var droneManage_router = require('./router/droneManagePage')
+            var db_router = require('./router/db')
+            var bash_router = require('./router/bash')
+            var view_router = require('./router/view')
             // make instances
             var app = express()
 
@@ -33,17 +34,15 @@ module.exports = function(conf) {
             app.use(bodyParser.urlencoded({ extended: true })); // parse the text as url encoded data. [false]:parse only once. [true]:parse every time (?????)
                 // register rounter sub apps
             app.use('/', index_router) 
-            app.use('/', dataAccess_router) 
-            app.use('/', appliedService_router)
-            app.use('/', submitService_router)
-            app.use('/', droneManage_router)
+            app.use('/', db_router) 
+            app.use('/', bash_router)
+            app.use('/', view_router)
             
             // use error check
             app.use(function(err, req, res, next) {
                 console.log("ERROR : APP.JS");
                 console.log("MSG: "+err);
             })
-
             // connect sub apps
 
             // listen application

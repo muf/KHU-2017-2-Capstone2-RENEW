@@ -12,6 +12,7 @@
     "array-flatten": "^2.1.1",
     "body-parser": "^1.18.2",
     "cloneextend": "0.0.3",
+    "cors": "^2.8.4",
     "csv": "^2.0.0",
     "csv-streamify": "^3.0.4",
     "ejs": "^2.5.6",

@@ -8,7 +8,8 @@ module.exports = function(conf) {
             var path = require('path');
             var bodyParser = require('body-parser');
             var mongoose    = require('mongoose');
-
+            var cors = require('cors')();
+            
             // load router sub apps
             var index_router = require('./router/index')
             var dataAccess_router = require('./router/dataAccess')
@@ -35,9 +36,8 @@ module.exports = function(conf) {
             console.log("ERROR : APP.JS");
             console.log("MSG: "+err);
             })
-
-            // connect sub apps
-
+            
+            app.use(cors);
             // listen application
             app.listen(conf.server.port, function(){
             console.log("Application [ %s ] is Running on %s port", conf.server.name, conf.server.port);
