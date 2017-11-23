@@ -6,6 +6,12 @@
     font-size:25px;
     color:#56a3e4;
 }
+#head-input-container{
+    margin-bottom:40px;
+    margin-top:40px;
+    font-size:25px;
+    color:#56a3e4;
+}
 #table-container{
     width:90%;
     height:80%;
@@ -17,6 +23,9 @@
 #table-container .table-data{
     width:200px;
 }
-#table-container{
+#side-button-container button{
+    float:right;
+}
+#side-button-container{
     margin-bottom:150px;
 }

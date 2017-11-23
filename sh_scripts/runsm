@@ -1,0 +1,3 @@
+#!/bin/bash
+cd  /Users/junghyun.park/Desktop/git/KHU-2017-2-Capstone2-RENEW/sh_scripts
+/Users/junghyun.park/Desktop/git/KHU-2017-2-Capstone2-RENEW/sh_scripts/runServer serviceMonitor

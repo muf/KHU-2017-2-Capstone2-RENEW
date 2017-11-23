@@ -1,0 +1,4 @@
+#!/bin/bash
+ps -ef | awk '/app.js/{print $2}' | xargs -I{} lsof -Pan -p {} -i
+echo '-------------------------------------------'
+ps -ef | grep app.js

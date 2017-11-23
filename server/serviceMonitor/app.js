@@ -16,7 +16,8 @@ module.exports = function(conf) {
             var index_router = require('./router/index')
             var dataAccess_router = require('./router/dataAccess')
             var appliedService_router = require('./router/appliedServicePage')
-            var submitServicePage_router = require('./router/submitServicePage')
+            var submitService_router = require('./router/submitServicePage')
+            var droneManage_router = require('./router/droneManagePage')
             // make instances
             var app = express()
 
@@ -34,12 +35,13 @@ module.exports = function(conf) {
             app.use('/', index_router) 
             app.use('/', dataAccess_router) 
             app.use('/', appliedService_router)
-            app.use('/', submitServicePage_router)
+            app.use('/', submitService_router)
+            app.use('/', droneManage_router)
             
             // use error check
             app.use(function(err, req, res, next) {
-            console.log("ERROR : APP.JS");
-            console.log("MSG: "+err);
+                console.log("ERROR : APP.JS");
+                console.log("MSG: "+err);
             })
 
             // connect sub apps

@@ -47,7 +47,7 @@
           <tbody>
             <% for(var i = 0; i < appliedList.length; i++){ %>
               <tr>
-                <td><%= appliedList[i]._id.toString() %></td>
+                <td style="display:none;" ><%= appliedList[i]._id.toString() %></td>
                 <td class="table-data"><%= appliedList[i].loggingDate %></td>
                 <td class="table-data"><%= appliedList[i].serviceStartDate %></td>
                 <td class="table-data"><%= appliedList[i].serviceEndDate %></td>
@@ -57,7 +57,7 @@
                 <td><%= appliedList[i].server.ip %></td>
                 <td><%= appliedList[i].server.port %></td>
                 <td><%= appliedList[i].contact.email %></td>
-                <td><%= appliedList[i].contact.number %></td
+                <td><%= appliedList[i].contact.number %></td>
                 <td><%= appliedList[i].state %></td>
               </tr>
             <% } %>

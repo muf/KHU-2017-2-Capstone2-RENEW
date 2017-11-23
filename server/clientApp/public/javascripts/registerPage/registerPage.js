@@ -37,6 +37,7 @@ function selectArea(){
 }
 function applyService(){
     console.log("applyService")
+    var data;
     if(app.area === null){
         alert("먼저 서비스 영역을 선택해 주세요.")
         return 
@@ -55,6 +56,7 @@ function applyService(){
     }
     var serviceStartDate = $('#service-start-date').data("DateTimePicker").date()._d
     var serviceEndDate = $('#service-end-date').data("DateTimePicker").date()._d
+    // @@@ 여기 좀 바꿔야함..
     var droneMin = $('#drone-min').val()
     var droneMax = $('#drone-max').val()
     // 값이 정상적이지 않은 경우 교정 진행

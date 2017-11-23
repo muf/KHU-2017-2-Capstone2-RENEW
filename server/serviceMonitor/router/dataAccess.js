@@ -15,6 +15,7 @@ db.once('open', function callback () {
 });
 
 var serviceApplication = require('../model/serviceApplication')
+var drone = require('../model/drone')
 // @get schema 
 
 // @ajax GET
@@ -33,6 +34,19 @@ router.post('/createServiceApplication', function(req, res) {
         function(err, serviceApplication) {
             if (err) return res.status(500).send("serviceApplication 생성 실패.");
             res.status(200).send(serviceApplication); // ? 뭘 보내는 거냐 // {"__v":0,"serviceStartDate":"2017-11-21T12:04:02.687Z","serviceEndDate":"2017-11-21T12:04:02.687Z","_id":"5a141632a8b0e03f802cef20","state":"applied","contact":{"email":"","number":""},"drone":{"max":0,"min":0},"bounds":{"max":{"lng":0,"lat":0},"min":{"lng":0,"lat":0}},"loggingDate":"2017-11-21T12:04:02.688Z"}
+        });
+});
+
+router.post('/addDrone', function(req, res) {
+    drone.create( {
+            ip: req.body.ip,
+            port: req.body.port,
+            model: req.body.model,
+            state: req.body.state
+		},
+        function(err, drone) {
+            if (err) return res.status(500).send("drone 생성 실패.");
+            res.status(200).send(drone); // ? 뭘 보내는 거냐 // {"__v":0,"serviceStartDate":"2017-11-21T12:04:02.687Z","serviceEndDate":"2017-11-21T12:04:02.687Z","_id":"5a141632a8b0e03f802cef20","state":"applied","contact":{"email":"","number":""},"drone":{"max":0,"min":0},"bounds":{"max":{"lng":0,"lat":0},"min":{"lng":0,"lat":0}},"loggingDate":"2017-11-21T12:04:02.688Z"}
         });
 });
 

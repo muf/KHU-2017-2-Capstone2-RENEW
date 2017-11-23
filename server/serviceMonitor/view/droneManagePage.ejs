@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<title> AP in the Sky(Service Monitor Application)</title>
+  <% include ./common/header.ejs %>
+    <!-- Custom CSS -->
+    <link rel='stylesheet' href='/css/common/nav-bar.css' />
+    <link rel='stylesheet' href='/css/droneManagePage/droneManagePage.css' />
+   
+     <!--JS --> 
+    <script src="/javascripts/droneManagePage/droneManagePage.js"></script>
+    <!-- datetime picker assets -->   
+    <script type="text/javascript" src="/bower_components/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="/bower_components/moment/min/moment.min.js"></script>
+    <script type="text/javascript" src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
+    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" />
+  </head>
+  <body>  
+    <% include ./common/nav-bar.ejs %>
+
+    <div id="main-container">
+      <!-- #table-container>#1 -->
+      <div id="head-container" class = "container">
+        드론 정보
+      </div>
+      <!-- #table-container>#2 -->
+      <div id="table-container" class = "container">
+        <table class="table table-fixed">
+          <thead>  
+              <tr>
+                <th style="display:none;" >오브젝트 아이디</th>
+                <th>주소</th>
+                <th>포트</th>
+                <th>모델명</th>
+                <th>상태</th> 
+              </tr>
+          </thead>
+          <tbody>
+            <% for(var i = 0; i < droneList.length; i++){ %>
+              <tr>
+                <td style="display:none;" ><%= droneList[i]._id.toString() %></td>
+                <td><%= droneList[i].ip %></td>
+                <td><%= droneList[i].port %></td>
+                <td><%= droneList[i].model %></td>
+                <td><%= droneList[i].state %></td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+        <script>
+          addTableEvents()
+        </script>
+      </div><!-- table container -->
+      
+      <!-- #table-container>#3 -->
+      <div id="head-input-container" class = "container">
+          드론 정보 입력
+        </div>
+
+      <!-- #table-container>#4 -->
+      <div id="input-container" class = "container">
+        <table class="table table-fixed">
+          <thead>  
+            <tr>
+              <th style="display:none;" >드론 아이디</th>
+              <th>주소</th>
+              <th>포트</th>
+              <th>모델명</th>
+              <th>상태</th> 
+            </tr>
+          </thead>
+          <tbody>
+              <tr>
+                <td>
+                  <form>
+                      <div class="form-group">
+                        <input type="text" class="form-control" id="drone-ip">
+                      </div>
+                    </form>
+                </td>
+                <td>
+                  <form>
+                      <div class="form-group">
+                        <input type="text" class="form-control" id="drone-port">
+                      </div>
+                    </form>
+                </td>
+                <td>
+                  <form>
+                      <div class="form-group">
+                        <input type="text" class="form-control" id="drone-model">
+                      </div>
+                    </form>
+                </td>
+                <td>
+                  <form>
+                      <div class="form-group">
+                        <input type="text" class="form-control" id="drone-state">
+                      </div>
+                    </form>
+                </td>
+              </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- #table-container>#5 -->
+      <div id ="side-button-container" class = "container">
+        <button type="button" id="apply-drone" class="btn btn-success" onclick="addDrone()"> 드론 추가 </button>
+      </div><!-- side button container -->
+    </div> <!-- main container  -->
+  </body>
+</html>

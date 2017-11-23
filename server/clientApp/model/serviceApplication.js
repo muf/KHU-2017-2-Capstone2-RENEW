@@ -36,6 +36,6 @@ var serviceApplicationSchema = new mongoose.Schema({
 
 serviceApplicationSchema.statics.findServicesByState = function(state, element) {
     return this.find({ state: new RegExp(state, 'i') }, element);
-  };
+};
   
 module.exports = mongoose.model('serviceApplication',serviceApplicationSchema);
