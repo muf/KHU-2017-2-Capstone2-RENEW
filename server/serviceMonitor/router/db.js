@@ -4,6 +4,7 @@ var request = require('request')
 var app = express()
 var cors = require('cors');
 var async = require('async');
+var fs = require('fs');
 // @ create db connector
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://root:admin@ds117136.mlab.com:17136/ap-in-the-sky',{
@@ -184,33 +185,28 @@ router.post('/executeService', cors(), function(req, res) {
             })
         },
         function (service,callback) {
-            request({
-                url:'http://localhost:3002/applyCheck',
-                method:"POST",
-                json:true,
-                body:service,
-                },function (err, response, body) {
-                    if (err) callback(err, true)
-                    callback(null, body)
-                }
-            )
-        },
-        function(body, callback){
-            var flag = req.body.droneNum < body.length
-            callback(null, {flag:flag,drones:body,})
-        },
-        function (data, callback) {  
-            if(data.flag){ // 할당 할 수 있는 드론이 있음
-               // 
+            var flag = service.blob.fileName == "" ? false : true
+            if(flag){
+                request({
+                    url:'http://localhost:3002/newServiceRequest',
+                    method:"POST",
+                    json:true,
+                    body:service,
+                    },function (err, response, body) {
+                        if (err) callback(err, true)
+                        callback(null, body)
+                    }
+                )
             }
             else{
-                callback("fail")
+                var err = {message:"입력 데이터가 없습니다."}
+                callback(null, {err})
             }
         }
     ]
     async.waterfall(tasks, function (err, results) {
         if(err) return res.status(500).send("fail")
-        res.status(200).send("ok");
+        res.json(results)
     })
 })
 
@@ -220,6 +216,35 @@ router.post('/getServiceApplication', function(req, res) {
         res.status(200).send(drone);
     })
 }) 
+
+router.post('/saveInputBlob', function(req, res) {
+    var input = JSON.stringify(req.body.input)
+    var serviceId = req.body.serviceId
+    var inputPath = '/Users/junghyun.park/Desktop/git/KHU-2017-2-Capstone2-RENEW/blob/input/'
+    var fileName = new Date().getTime()+'.input'
+    req.body.fileName = fileName
+    fs.writeFile(inputPath + fileName, input, function(err) {
+        if(err) {
+            console.log(err)
+            return res.status(500).send("fail")
+        }
+        //fileName
+        dao.updateServiceBlob(req,res,function(err,res,result){
+            if(err) return res.status(500).send("fail")
+            console.log("update ")
+            res.json("ok")
+        })
+    });
+    // 1511701830769
+}) 
+// router.post('/getInputBlob', function(req, res) {
+//     var input = JSON.stringify(req.body.input)
+//     var inputPath = '/Users/junghyun.park/Desktop/git/KHU-2017-2-Capstone2-RENEW/blob/input/'
+//     fs.writeFile(inputPath +new Date().getTime()+'.input', input, function(err) {
+//         if(err) return res.status(500).send("fail")
+//         res.json()
+//     });
+// }) 
 
 
 module.exports = router

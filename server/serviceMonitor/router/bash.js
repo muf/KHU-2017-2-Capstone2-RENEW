@@ -21,17 +21,7 @@ router.post('/newServiceRequest',function(req, res, next) {
 
         callback(null, port)        
       })
-    },
-    // function(pid, callback) {
-    //   var pid = bash.getRealPid(pid, function(pid){
-    //     callback(null, pid )        
-    //   })
-    // }
-    // function(pid, callback) {
-    //     var port = bash.getPortByPid(pid,function(data){
-    //       calllback(null, {pid:data.pid, port:data.port})      
-    //     })
-    // },
+    }
   ], function (err, result) {
       // result now equals 'done'
       res.json(result)

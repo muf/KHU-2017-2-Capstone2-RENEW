@@ -30,8 +30,8 @@ module.exports = function(conf) {
             app.use(express.static(path.join(__dirname, 'public'))); // static default path to public ex) /css == ... $ROOT/public/css
                 // 이렇게 해두면 public 밑에만 static 하게 접근되고, 이보다 부모 디렉토리이거나 형제 디렉토리인 경우 임의로 접근이 불가. 보안 관리 측면의 옵션이라고 볼 수도 있다.
                 // 단 ejs의 경로를 제어 하는 것이니 헷갈리지 마시길
-            app.use(bodyParser.json()); // parse body of response to json 
-            app.use(bodyParser.urlencoded({ extended: true })); // parse the text as url encoded data. [false]:parse only once. [true]:parse every time (?????)
+            app.use(bodyParser.json({ limit: '100mb'})); // parse body of response to json 
+            app.use(bodyParser.urlencoded({ limit: '100mb', extended: true })); // parse the text as url encoded data. [false]:parse only once. [true]:parse every time (?????)
                 // register rounter sub apps
             app.use('/', index_router) 
             app.use('/', db_router) 

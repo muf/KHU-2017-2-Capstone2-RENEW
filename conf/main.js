@@ -1,7 +1,7 @@
 // 전체 config 중 하나를 선택해서 사용
 var tool = require('cloneextend'), conf = {};
 
-var serverName = 'serviceExecutor'
+var serverName = 'serviceMonitor'
 
 conf.defaults = {
     server : {

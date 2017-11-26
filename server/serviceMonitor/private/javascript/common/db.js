@@ -72,7 +72,7 @@ function updateService(req, res, callback){
     });
 }
 
-function updateService(req, res, callback){
+function updateServiceState(req, res, callback){
     serviceApplication.update( {
         _id: req.body.serviceId            
     },
@@ -111,10 +111,25 @@ function submitServiceApplication(req, res, callback){
             }
     });
 }
+
+function updateServiceBlob(req, res, callback){
+    serviceApplication.update( {
+        _id: req.body.serviceId            
+    },
+    {$set:{ "blob.fileName": req.body.fileName}},
+    function(err, serviceApplication) {
+        if(typeof callback === 'function') {
+            if(err) return callback(err, res, serviceApplication)
+            else return callback(undefined, res, serviceApplication)
+        }
+    });
+}
 module.exports.submitServiceApplication = submitServiceApplication
 module.exports.getServicesByState = getServicesByState
 module.exports.getServiceById = getServiceById
 module.exports.updateService = updateService
+module.exports.updateServiceBlob = updateServiceBlob
+module.exports.updateServiceState = updateServiceState
 module.exports.putService = putService
 module.exports.putDrone = putDrone
 module.exports.getDrones = getDrones

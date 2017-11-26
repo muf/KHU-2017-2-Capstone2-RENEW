@@ -32,6 +32,11 @@ router.get('/droneManagePage',function(req, res, next) {
     })
 });
 
+router.get('/dataGeneratePage?:serviceId',function(req, res, next) {
+    var serviceId = req.query.serviceId
+    res.render(dir.get('view') + '/dataGeneratePage.ejs',{serviceId: serviceId})
+});
+
 app.use(function(err, req, res, next) {
     console.log("error check");
     console.log(err);

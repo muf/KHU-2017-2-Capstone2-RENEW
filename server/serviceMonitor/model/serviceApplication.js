@@ -15,7 +15,9 @@ var serviceApplicationSchema = new mongoose.Schema({
         }
     },
     blob:{
-        id: String
+        inputBasePath:{type:String, default: '/Users/junghyun.park/Desktop/git/KHU-2017-2-Capstone2-RENEW/blob/input/'},
+        outputBasePath:{type:String, default: '/Users/junghyun.park/Desktop/git/KHU-2017-2-Capstone2-RENEW/blob/output/'},
+        fileName: {type: String, default:""}
     },
     drone:{
         num : { type: Number, default: 0 },

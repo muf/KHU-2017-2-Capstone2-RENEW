@@ -25,39 +25,75 @@ function addTableEvents(){
 
 
   $('#table-container tbody tr button').click(function(event){
-      if(confirm("서비스를 실행하시겠습니까?")==true){
-      var tr = event.currentTarget.parentElement.parentElement
-          var objectId = tr.getElementsByTagName('td')[0].innerHTML
-          $.ajax({
-              url : "/newServiceRequest",
-              type: "POST",
-              data : {
-                  serviceId: objectId
-              },
-              success: function(data, textStatus, jqXHR)
-              {
-
-                  if(data.err!=undefined){
-                      alert(data.err.message)
-                      location.reload(); // 성공 시 다시 로드하여 페이지를 갱신한다.  
-                  }
-                  else{
-                      alert("서비스 실행에 성공하였습니다.") 
-                      alert(data)
-                      location.reload(); // 성공 시 다시 로드하여 페이지를 갱신한다.  
-                      window.open(`localhost://${data}`,'_blank')   
-                  }              
-              },
-              error: function (jqXHR, textStatus, errorThrown)
-              {
-                  alert("서비스 실행에 실패하였습니다.")   
-                  location.reload(); // 실패 시 다시 로드하여 페이지를 갱신한다.    
-              }
-          });
+      var id = event.currentTarget.id
+      if( id == "make-data"){
+          makeDataAction(event)
+      }else if(id == "execute"){
+        executeAction(event)
       }
+      else{
+          return ;
+      }
+     
     })
 }
+function makeDataAction(event){
+    var tr = event.currentTarget.parentElement.parentElement
+    var objectId = tr.getElementsByTagName('td')[0].innerHTML
+    $.ajax({
+        url : "/getServiceApplication",
+        type: "POST",
+        data : {
+            serviceId: objectId
+        },
+        success: function(data, textStatus, jqXHR)
+        {
+            if(data.err!=undefined){
+                alert(data.err.message)
+            }
+            else{
+                var serviceId = data._id
+                window.open(`/dataGeneratePage?serviceId=${serviceId}`)  
+            }              
+        },
+        error: function (jqXHR, textStatus, errorThrown)
+        {
+            alert("Internal Error")     
+        }
+    });
+}
+function executeAction(event){
+    if(confirm("서비스를 실행하시겠습니까?")==true){
+        var tr = event.currentTarget.parentElement.parentElement
+        var objectId = tr.getElementsByTagName('td')[0].innerHTML
+        $.ajax({
+            url : "/executeService",
+            type: "POST",
+            data : {
+                serviceId: objectId
+            },
+            success: function(data, textStatus, jqXHR)
+            {
 
+                if(data.err!=undefined){
+                    alert(data.err.message)
+                    location.reload(); // 성공 시 다시 로드하여 페이지를 갱신한다.  
+                }
+                else{
+                    alert("서비스 실행에 성공하였습니다.") 
+                    alert(data)
+                    location.reload(); // 성공 시 다시 로드하여 페이지를 갱신한다.  
+                    window.open(`localhost://${data}`,'_blank')   
+                }              
+            },
+            error: function (jqXHR, textStatus, errorThrown)
+            {
+                alert("서비스 실행에 실패하였습니다.")   
+                location.reload(); // 실패 시 다시 로드하여 페이지를 갱신한다.    
+            }
+        });
+    }
+}
 
 function convertTimeFormat(form){
   var al = $('#table-container tbody tr')
