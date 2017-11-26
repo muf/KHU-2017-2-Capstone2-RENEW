@@ -11,6 +11,7 @@ module.exports = function(conf) {
 
             // load router sub apps
             
+            var index_router = require('./router/index')
             // make instances
             var app = express()
 
@@ -32,7 +33,7 @@ module.exports = function(conf) {
             })
 
             // connect sub apps
-
+            app.use('/', index_router) 
             // listen application
             app.listen(function(){
                 var port = this.address().port

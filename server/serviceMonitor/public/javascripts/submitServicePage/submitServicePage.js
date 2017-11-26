@@ -11,17 +11,18 @@ function addTableEvents(){
         if(confirm("serviceExecutor을 실행하시겠어요?")==true){
         var tr = event.currentTarget
         var objectId = tr.getElementsByTagName('td')[0].innerHTML
+
           $.ajax({
-            url : "/executeService",
-            type: "POST",
-            data:{serviceId:objectId},
-            headers: {
-              'Cache-Control': 'no-cache'
-            },
+            url : "/newServiceRequest",
+            type: "GET",
             success: function(data, textStatus, jqXHR)
             {
                 //data - response from server
-                alert("실행에 성공하였습니다.") 
+                // var pid = data.pid
+                // var port = data.port
+                // window.open("localhost:"+port,"_blank")
+                // alert("실행에 성공하였습니다.(pid: "+pid+", port: "+port+")") 
+                alert(data)
                 // location.reload(); // 성공 시 다시 로드하여 페이지를 갱신한다.                    
             },
             error: function (jqXHR, textStatus, errorThrown)
@@ -29,7 +30,26 @@ function addTableEvents(){
                 alert("실행에 실패하였습니다.")   
                 // location.reload(); // 실패 시 다시 로드하여 페이지를 갱신한다.    
             }
-        });
+          })
+        //   $.ajax({
+        //     url : "/executeService",
+        //     type: "POST",
+        //     data:{serviceId:objectId},
+        //     headers: {
+        //       'Cache-Control': 'no-cache'
+        //     },
+        //     success: function(data, textStatus, jqXHR)
+        //     {
+        //         //data - response from server
+        //         alert("실행에 성공하였습니다.") 
+        //         // location.reload(); // 성공 시 다시 로드하여 페이지를 갱신한다.                    
+        //     },
+        //     error: function (jqXHR, textStatus, errorThrown)
+        //     {
+        //         alert("실행에 실패하였습니다.")   
+        //         // location.reload(); // 실패 시 다시 로드하여 페이지를 갱신한다.    
+        //     }
+        // });
         }
       })
 }
