@@ -202,6 +202,36 @@ router.post('/executeService', cors(), function(req, res) {
                 var err = {message:"입력 데이터가 없습니다."}
                 callback(null, {err})
             }
+        },
+        function(result, callback){
+            if(result.err != undefined){
+                callback(null, {err:result.err})
+            }
+            else{
+                req.body.state = "execute"
+                req.body.pid = result.pid
+                req.body.port = Number(result.port)
+                dao.updateServiceState(req, res, function(err, res, drone){
+                    if(err) callback(err)
+                    callback(null, result)
+                })
+            }
+        },
+        function(result, callback){
+            if(result.err != undefined){
+                callback(null, {err:result.err})
+            }
+            else{
+                req.body.server = { // executor server
+                    pid: req.body.pid,
+                    ip: "127.0.0.1",
+                    port:  req.body.port
+                }
+                dao.updateServiceAddress(req, res, function(err, res, drone){
+                    if(err) callback(err)
+                    callback(null, result)
+                })
+            }
         }
     ]
     async.waterfall(tasks, function (err, results) {
@@ -231,7 +261,7 @@ router.post('/saveInputBlob', function(req, res) {
         //fileName
         dao.updateServiceBlob(req,res,function(err,res,result){
             if(err) return res.status(500).send("fail")
-            console.log("update ")
+            console.log("data input ")
             res.json("ok")
         })
     });

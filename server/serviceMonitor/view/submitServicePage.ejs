@@ -44,6 +44,7 @@
               <th>상태</th>
               <th></th>
               <th></th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -62,7 +63,12 @@
                 <td><%= submitList[i].contact.number %></td>
                 <td><%= submitList[i].state %></td>
                 <td><button type="button" id="make-data" class="btn btn-info"> make data </button></td>
+                <% if(submitList[i].state == 'execute'){%>
+                  <td><button type="button" id="view" class="btn btn-info"> view </button></td>
+                <%}%>
+                <% if(submitList[i].state == 'submit'){%>
                 <td><button type="button" id="execute" class="btn btn-info"> execute </button></td>
+                <%}%>
               </tr>
             <% } %>
           </tbody>

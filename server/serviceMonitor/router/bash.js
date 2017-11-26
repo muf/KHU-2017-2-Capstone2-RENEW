@@ -17,13 +17,14 @@ router.post('/newServiceRequest',function(req, res, next) {
   // executor 실행
   async.waterfall([
     function(callback) {
-      bash.runExecutor(serviceId, function(port){
-
-        callback(null, port)        
+      bash.runExecutor(serviceId, function(address){
+        callback(null, address)        
       })
     }
   ], function (err, result) {
       // result now equals 'done'
+
+      console.log("executor run return")
       res.json(result)
   });
     

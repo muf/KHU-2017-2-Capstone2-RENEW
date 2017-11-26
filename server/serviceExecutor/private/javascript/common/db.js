@@ -41,8 +41,8 @@ function putService(req, res, callback){
         }
     });
 }
-function getServicesByState(req, res, state, callback){
-    serviceApplication.findByState(state, function(err, services){
+function getServicesByState(req, res, states, callback){
+    serviceApplication.findByState(states, function(err, services){
         if(typeof callback === 'function') {
             if(err) return callback(err, res, services)
             else return callback(undefined, res, services)

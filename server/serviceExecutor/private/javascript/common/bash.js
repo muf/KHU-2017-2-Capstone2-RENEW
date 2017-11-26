@@ -36,11 +36,3 @@ function run(query, callback){
   }
 
 module.exports.run = run
-
-function getServicesByState(res, state, callback){
-    serviceApplication.findServicesByState(state, function(err, list){
-        if(typeof callback === 'function') {
-            callback(res, list);
-        }
-    }, res)
-}

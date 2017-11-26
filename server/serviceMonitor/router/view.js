@@ -12,14 +12,14 @@ var dao = require(dir.get('private') + 'javascript/common/db.js')
 
 // @ rendering pages (VIEW)
 router.get('/submitServicePage',function(req, res, next) {
-    dao.getServicesByState(req, res,'submit', function(err, res, services){
+    dao.getServicesByState(req, res,['submit','execute'], function(err, res, services){
         if (err) return res.status(500).send("get services by state FAIL");
         res.render(dir.get('view') + '/submitServicePage.ejs',{submitList: services});
     })
 });
 
 router.get('/appliedServicePage',function(req, res, next) {
-    dao.getServicesByState(req, res,'applied', function(err, res, services){
+    dao.getServicesByState(req, res,['applied'], function(err, res, services){
         if (err) return res.status(500).send("get services by state FAIL");
         res.render(dir.get('view') + '/appliedServicePage.ejs',{appliedList: services});
     })

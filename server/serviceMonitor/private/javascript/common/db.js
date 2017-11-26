@@ -41,8 +41,8 @@ function putService(req, res, callback){
         }
     });
 }
-function getServicesByState(req, res, state, callback){
-    serviceApplication.findByState(state, function(err, services){
+function getServicesByState(req, res, states, callback){
+    serviceApplication.findByState(states, function(err, services){
         if(typeof callback === 'function') {
             if(err) return callback(err, res, services)
             else return callback(undefined, res, services)
@@ -124,6 +124,20 @@ function updateServiceBlob(req, res, callback){
         }
     });
 }
+function updateServiceAddress(req, res, callback){
+    serviceApplication.update( {
+        _id: req.body.serviceId            
+    },
+    {$set:{ "server": req.body.server}},
+    function(err, serviceApplication) {
+        if(typeof callback === 'function') {
+            if(err) return callback(err, res, serviceApplication)
+            else return callback(undefined, res, serviceApplication)
+        }
+    });
+}
+
+module.exports.updateServiceAddress = updateServiceAddress
 module.exports.submitServiceApplication = submitServiceApplication
 module.exports.getServicesByState = getServicesByState
 module.exports.getServiceById = getServiceById

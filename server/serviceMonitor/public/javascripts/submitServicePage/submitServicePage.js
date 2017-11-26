@@ -30,13 +30,22 @@ function addTableEvents(){
           makeDataAction(event)
       }else if(id == "execute"){
         executeAction(event)
+      }else if(id == "view"){
+        viewAction(event)
       }
+      
       else{
           return ;
       }
      
     })
 }
+function viewAction(event){
+    var tr = event.currentTarget.parentElement.parentElement
+    var port = tr.getElementsByTagName('td')[8].innerHTML
+    window.open(`localhost://${port}`,'_blank')  
+}
+
 function makeDataAction(event){
     var tr = event.currentTarget.parentElement.parentElement
     var objectId = tr.getElementsByTagName('td')[0].innerHTML
@@ -81,9 +90,9 @@ function executeAction(event){
                 }
                 else{
                     alert("서비스 실행에 성공하였습니다.") 
-                    alert(data)
+                    var port = data.port
+                    alert(port)
                     location.reload(); // 성공 시 다시 로드하여 페이지를 갱신한다.  
-                    window.open(`localhost://${data}`,'_blank')   
                 }              
             },
             error: function (jqXHR, textStatus, errorThrown)

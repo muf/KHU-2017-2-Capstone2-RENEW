@@ -33,8 +33,8 @@ function run(query, callback, block = false){
         callback(proc)
     }
   }
-  function getPortByPid(pid, callback){
-
+  function getPortByPid(proc, callback){
+    var pid = proc.pid
 	var query = "lsof -Pan -p " + pid + " -i | grep \'*\' | awk \'{split($9,data,\":\"); printf(\"\\n\");printf(\"%s\",data[2]);}\'"
     console.log(query)
     setTimeout(function(){    
@@ -47,7 +47,7 @@ function run(query, callback, block = false){
             console.log(`stderr: ${stderr}`);
             
             if(typeof callback === 'function'){
-                callback(stdout.trim())
+                callback({pid:proc.pid, port: stdout.trim()})
             }
         });
     },1000)
@@ -75,8 +75,8 @@ function runExecutor(serviceId ,callback){
     var query = {program: program, params: params}
     console.log(query)
     run(query, function(proc){
-        getPortByPid(proc.pid, function(port){
-            callback(port)
+        getPortByPid(proc, function(address){
+            callback(address)
         })
     })
 }
