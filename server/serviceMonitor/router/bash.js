@@ -11,14 +11,15 @@ var bash = require(dir.get('private') + 'javascript/common/bash.js')
 var count = 0
 
 // @ handle bash requests
-router.get('/newServiceRequest',function(req, res, next) {
-
+router.post('/newServiceRequest',function(req, res, next) {
+  var serviceId = req.body.serviceId
+  console.log(serviceId)
   // executor 실행
   async.waterfall([
     function(callback) {
-      bash.runExecutor(function(proc){
-        console.log(count)
-        callback(null, proc.pid )        
+      bash.runExecutor(serviceId, function(port){
+
+        callback(null, port)        
       })
     },
     // function(pid, callback) {

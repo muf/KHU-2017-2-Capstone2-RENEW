@@ -1,30 +1,50 @@
 
 function addTableEvents(){
+    $('#table-container tbody tr').dblclick(function(event){
+   
+    })
     $('#table-container tbody tr').click(function(event){
         var tr = event.currentTarget
-        var objectId = tr.getElementsByTagName('td')[0].innerHTML
-        var cur = tr.getElementsByTagName('td')[6].innerHTML
-        console.log(objectId + ' / ' + cur)
+        var serviceId = tr.getElementsByTagName('td')[0].innerHTML
+        $.ajax({
+            url : "/getServiceApplication",
+            type: "POST",
+            data : {
+                serviceId: serviceId
+            },
+            success: function(data, textStatus, jqXHR)
+            {
+                console.log(JSON.stringify(data))                  
+            },
+            error: function (jqXHR, textStatus, errorThrown)
+            {
+                console.log("error: " + errorThrown)     
+            }
+        });
       })
 
 
-    $('#table-container tbody tr').dblclick(function(event){
+    $('#table-container tbody tr button').click(function(event){
         if(confirm("서비스를 수락하시겠습니까?")==true){
-            var tr = event.currentTarget
+        var tr = event.currentTarget.parentElement.parentElement
             var objectId = tr.getElementsByTagName('td')[0].innerHTML
-            var state = "submit"
             $.ajax({
-                url : "/updateServiceApplicationState",
+                url : "/submitService",
                 type: "POST",
                 data : {
-                    objectId: objectId,
-                    state: state
+                    serviceId: objectId
                 },
                 success: function(data, textStatus, jqXHR)
                 {
-                    //data - response from server
-                    alert("서비스 등록에 성공하였습니다.") 
-                    location.reload(); // 성공 시 다시 로드하여 페이지를 갱신한다.                    
+
+                    if(data.err!=undefined){
+                        alert(data.err.message)
+                        location.reload(); // 성공 시 다시 로드하여 페이지를 갱신한다.  
+                    }
+                    else{
+                        alert("서비스 등록에 성공하였습니다.") 
+                        location.reload(); // 성공 시 다시 로드하여 페이지를 갱신한다.     
+                    }              
                 },
                 error: function (jqXHR, textStatus, errorThrown)
                 {

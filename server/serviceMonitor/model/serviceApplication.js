@@ -14,26 +14,25 @@ var serviceApplicationSchema = new mongoose.Schema({
             lng : { type: Number, default: 0 }
         }
     },
+    blob:{
+        id: String
+    },
     drone:{
         num : { type: Number, default: 0 },
-        min : { type: Number, default: 0 },
-        max : { type: Number, default: 0 },
-        current :{type: Number, default: 0},
         list : [{
-            id: Number,
-            ip: String
+            id: String
         }]
     },
     contact:{
         email : { type: String, default: "" },
         number : {type: String, default: "" },
     },
-    state: { type: String, default: 'applied' }, // 'submit / finished / denied / applied'
-    server: {
+    state: { type: String, default: 'applied' }, // 'submit / finished / denied / applied / execute'
+    server: { // executor server
+        pid: {type: Number, default: -1 },
         ip: { type: String, default: '0.0.0.0' },
-        port: { type: String, default: '3005' }
-    },
-    executorId: Number
+        port: { type: Number, default: -1 }
+    }
 });
 
 serviceApplicationSchema.statics.findByState = function(state, element) {

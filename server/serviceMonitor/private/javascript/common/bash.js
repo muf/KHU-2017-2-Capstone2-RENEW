@@ -6,23 +6,25 @@ function run(query, callback, block = false){
     var result=""
     // const proc = spawn(query.program, query.params);
     
-    var proc = spawn(query.program,query.params,)
+    var proc = spawn(query.program,query.params)
 
     proc.stdout.on('data', (data) => {
         result += `stdout: ${data}`
-        console.log(`stdout: ${data}`)
+        // console.log(`stdout: ${data}`)
     });
     
     proc.stderr.on('data', (data) => {
         result += `stderr: ${data}`
-        console.log(`stderr: ${data}`)
+        // console.log(`stderr: ${data}`)
     });
     
     proc.on('close', (code) => {
 
         console.log(`child process exited with code ${code}`);
         fs.writeFile(logPath + '/serviceExecutor/serviceExecutor-'+proc.pid+"-"+new Date().getTime()+'.log',result, function(err) {
-          if (err) throw err;
+            if (err){
+                console.log(`logging failed ${err.message.toString()}`);
+            }
         });
         //if(block == true) callback(result)
     });
@@ -32,12 +34,29 @@ function run(query, callback, block = false){
     }
   }
   function getPortByPid(pid, callback){
-      var query = "lsof -Pan -p " + pid + " -i | grep \'*\' | awk \'{printf(\"%s\\n\",$9);split($9,data,\":\"); printf(\"%s\\n\",data[2])}\'"
-      console.log(query)
-      var data = []
-      var proc = run(query, function(result){
-          callback(result)
-      },true)
+
+	var query = "lsof -Pan -p " + pid + " -i | grep \'*\' | awk \'{split($9,data,\":\"); printf(\"\\n\");printf(\"%s\",data[2]);}\'"
+    console.log(query)
+    setTimeout(function(){    
+        exec(query, (error, stdout, stderr) => {
+            if (error) {
+            console.error(`exec error: ${error}`);
+            return;
+            }
+            console.log(`stdout: ${stdout}`);
+            console.log(`stderr: ${stderr}`);
+            
+            if(typeof callback === 'function'){
+                callback(stdout.trim())
+            }
+        });
+    },1000)
+    //   var query = "lsof -Pan -p " + pid + " -i | grep \'*\' | awk \'{split($9,data,\":\"); printf(\"\\n\");printf(\"%s\",data[2])}\'"
+    //   console.log(query)
+    //   var data = []
+    //   var proc = exec(query, function(err,stdout,stderr){
+    //       callback({err, stdout, stderr})
+    //   })
   }
 
 function getRealPid(pid, callback){
@@ -50,13 +69,15 @@ function getRealPid(pid, callback){
         callback(result)
     },true)
 }
-function runExecutor(callback){
+function runExecutor(serviceId ,callback){
     var program = 'node'
-    var params = ['/Users/junghyun.park/Desktop/git/KHU-2017-2-Capstone2-RENEW/app.js', '--config=serviceExecutor']
+    var params = ['/Users/junghyun.park/Desktop/git/KHU-2017-2-Capstone2-RENEW/app.js', '--config=serviceExecutor', serviceId]
     var query = {program: program, params: params}
     console.log(query)
-    var proccess = run(query, function(proc){
-        callback(proc)
+    run(query, function(proc){
+        getPortByPid(proc.pid, function(port){
+            callback(port)
+        })
     })
 }
   

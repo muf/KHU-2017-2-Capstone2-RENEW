@@ -5,7 +5,7 @@ var droneSchema = new mongoose.Schema({
     port: { type: String, default: '0000' },
     model: { type: String, default: 'bebop2' },
     state: { type: String, default: 'ready' },
-    executors:[{id: Number, serviceStartDate: Date, serviceEndDate: Date}]
+    services:[{id: String, serviceStartDate: Date, serviceEndDate: Date}]
 });
 
 droneSchema.statics.findAllDrones = function(element) {

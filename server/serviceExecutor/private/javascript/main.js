@@ -14,7 +14,7 @@ function main(count){
     async.whilst(
         function () { 
             console.log("check conditions...")
-            return count < 5; 
+            return count < 500; 
         },
         function (callback) {
             count++;

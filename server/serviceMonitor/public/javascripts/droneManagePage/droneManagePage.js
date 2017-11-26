@@ -20,7 +20,7 @@ function addDrone(){
     var port = $('#drone-port').val()
     var model = $('#drone-model').val()
     var state = $('#drone-state').val()
-    var data;
+    var data={};
 
     if(ip!="") data.ip = ip;
     if(port!="") data.port = port;

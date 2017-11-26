@@ -30,7 +30,7 @@ function putService(req, res, callback){
     serviceApplication.create({
         serviceStartDate: req.body.serviceStartDate,
         serviceEndDate: req.body.serviceEndDate,
-        drone:{min: req.body.droneMin, max: req.body.droneMax},
+        drone:{num: req.body.drone.num},
         contact:{email: req.body.email, number: req.body.contactNumber},
         bounds:req.body.bounds
     },
@@ -61,7 +61,7 @@ function getServiceById(req, res, callback){
 }
 function updateService(req, res, callback){
     serviceApplication.update( {
-        _id: req.body.objectId            
+        _id: req.body.serviceId            
     },
     {$set:{ state: req.body.state}},
     function(err, serviceApplication) {
@@ -72,6 +72,46 @@ function updateService(req, res, callback){
     });
 }
 
+function updateService(req, res, callback){
+    serviceApplication.update( {
+        _id: req.body.serviceId            
+    },
+    {$set:{ state: req.body.state}},
+    function(err, serviceApplication) {
+        if(typeof callback === 'function') {
+            if(err) return callback(err, res, serviceApplication)
+            else return callback(undefined, res, serviceApplication)
+        }
+    });
+}
+function submitServiceApplication(req, res, callback){
+        for(var i = 0; i < req.body.applicationModelInput.length; i++){
+            drone.update({
+                _id: req.body.applicationModelInput[i].id
+            },
+            {$push:{
+                services: req.body.droneModelInput
+            }
+            },
+            function(err, result) {
+                console.log(err)
+            })
+        }
+        serviceApplication.update( {
+            _id: req.body.service._id     
+        },
+        {$set:{
+            "drone.list": req.body.applicationModelInput,
+            state: 'submit'
+        }},
+        function(err, serviceApplication) {
+            if(typeof callback === 'function') {
+                if(err) return callback(err, res)
+                else return callback(undefined, res)
+            }
+    });
+}
+module.exports.submitServiceApplication = submitServiceApplication
 module.exports.getServicesByState = getServicesByState
 module.exports.getServiceById = getServiceById
 module.exports.updateService = updateService

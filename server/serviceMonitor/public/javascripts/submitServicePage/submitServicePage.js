@@ -1,58 +1,63 @@
 
 function addTableEvents(){
-    $('#table-container tbody tr').click(function(event){
-        var tr = event.currentTarget
-        var objectId = tr.getElementsByTagName('td')[0].innerHTML
-        var cur = tr.getElementsByTagName('td')[6].innerHTML
-        console.log(objectId + ' / ' + cur)
-      })
+  $('#table-container tbody tr').dblclick(function(event){
+ 
+  })
+  $('#table-container tbody tr').click(function(event){
+      var tr = event.currentTarget
+      var serviceId = tr.getElementsByTagName('td')[0].innerHTML
+      $.ajax({
+          url : "/getServiceApplication",
+          type: "POST",
+          data : {
+              serviceId: serviceId
+          },
+          success: function(data, textStatus, jqXHR)
+          {
+              console.log(JSON.stringify(data))                  
+          },
+          error: function (jqXHR, textStatus, errorThrown)
+          {
+              console.log("error: " + errorThrown)     
+          }
+      });
+    })
 
-    $('#table-container tbody tr').dblclick(function(event){
-        if(confirm("serviceExecutor을 실행하시겠어요?")==true){
-        var tr = event.currentTarget
-        var objectId = tr.getElementsByTagName('td')[0].innerHTML
 
+  $('#table-container tbody tr button').click(function(event){
+      if(confirm("서비스를 실행하시겠습니까?")==true){
+      var tr = event.currentTarget.parentElement.parentElement
+          var objectId = tr.getElementsByTagName('td')[0].innerHTML
           $.ajax({
-            url : "/newServiceRequest",
-            type: "GET",
-            success: function(data, textStatus, jqXHR)
-            {
-                //data - response from server
-                // var pid = data.pid
-                // var port = data.port
-                // window.open("localhost:"+port,"_blank")
-                // alert("실행에 성공하였습니다.(pid: "+pid+", port: "+port+")") 
-                alert(data)
-                // location.reload(); // 성공 시 다시 로드하여 페이지를 갱신한다.                    
-            },
-            error: function (jqXHR, textStatus, errorThrown)
-            {
-                alert("실행에 실패하였습니다.")   
-                // location.reload(); // 실패 시 다시 로드하여 페이지를 갱신한다.    
-            }
-          })
-        //   $.ajax({
-        //     url : "/executeService",
-        //     type: "POST",
-        //     data:{serviceId:objectId},
-        //     headers: {
-        //       'Cache-Control': 'no-cache'
-        //     },
-        //     success: function(data, textStatus, jqXHR)
-        //     {
-        //         //data - response from server
-        //         alert("실행에 성공하였습니다.") 
-        //         // location.reload(); // 성공 시 다시 로드하여 페이지를 갱신한다.                    
-        //     },
-        //     error: function (jqXHR, textStatus, errorThrown)
-        //     {
-        //         alert("실행에 실패하였습니다.")   
-        //         // location.reload(); // 실패 시 다시 로드하여 페이지를 갱신한다.    
-        //     }
-        // });
-        }
-      })
+              url : "/newServiceRequest",
+              type: "POST",
+              data : {
+                  serviceId: objectId
+              },
+              success: function(data, textStatus, jqXHR)
+              {
+
+                  if(data.err!=undefined){
+                      alert(data.err.message)
+                      location.reload(); // 성공 시 다시 로드하여 페이지를 갱신한다.  
+                  }
+                  else{
+                      alert("서비스 실행에 성공하였습니다.") 
+                      alert(data)
+                      location.reload(); // 성공 시 다시 로드하여 페이지를 갱신한다.  
+                      window.open(`localhost://${data}`,'_blank')   
+                  }              
+              },
+              error: function (jqXHR, textStatus, errorThrown)
+              {
+                  alert("서비스 실행에 실패하였습니다.")   
+                  location.reload(); // 실패 시 다시 로드하여 페이지를 갱신한다.    
+              }
+          });
+      }
+    })
 }
+
 
 function convertTimeFormat(form){
   var al = $('#table-container tbody tr')
