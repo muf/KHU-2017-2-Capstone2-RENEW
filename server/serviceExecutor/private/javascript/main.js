@@ -22,6 +22,9 @@ var taskTick = false
 var tempTickStack = 0
 var service;
 var inputStream
+var nodeList;
+var seq = -1;
+var errList= []
 function main(count){
     // 매 주기 마다 상태를 체크한다.
     // 
@@ -35,24 +38,23 @@ function main(count){
                 return false
             }
             // 특정 주기를 기준으로 돌려야 한다.
-            if(tempTickStack > 1){
-                tempTickStack = 0
-                taskTick = true
+            // mainTask 도중에는 변경하면 안된다.
+            if(!mutex.lock && !interrupt.pause){
+                var nextSeq = getCycleSeqence()
+                if(nextSeq < 0) {
+                    errList.push("시간이 이미 만료된 서비스")
+                    interrput.kill = true
+                }
+                     // -1? 이면 사실상 끝난거임..
+                if(nextSeq > seq ) seq = nextSeq // 더 큰 seq라면 업데이트
+                taskTick = true // task 준비 완료 신호
             }
-            // task가 끝나는 순간부터 다시 하나씩 쌓는다.
-            if(!taskTick && !interrupt.pause){
-                tempTickStack++
-            }
-            return count < 500    
-
-            // 시간 체크
-           
+            return count < 100000  
         },
         function (callback) {
             count++;
-            console.log("func1")
             if(errCount > 3){
-                callback(err={message:"func이 끝나지 않아 errCount 초과"})
+                callback(err={message:"mainTask가 정상적인 시간내에 종료되지 않음."})
             }
             checkTimer = setTimeout(function(){
                callback()
@@ -165,15 +167,38 @@ function droneControl(){
 }
 function exitProcess(){
     // db 등 정리 
+    errList.forEach(function(err){console.log(err)})
     process.exit()
 }
+
+
+function getCycleSeqence(){
+    var currentCycle = getCycle(new Date())
+    var startCycle = getCycle(new Date(service.serviceStartDate))
+    var endCycle = getCycle(new Date(service.serviceEndDate))
+    if(currentCycle > endCycle) return -1
+    else{
+        var seq = currentCycle - startCycle
+        return seq > 0 ? seq : -1 
+    }
+}
+
+function getCycle(date){
+	var d1 = new Date(Math.floor(date/60000))
+	return d1.getTime() 
+}
+
 module.exports.main = main
 /*
-function isSameCycle(date1, date2){
-	var d1 = new Date(Math.floor(date1/60000)*60000)
-	var d2 = new Date(Math.floor(date2/60000)*60000)
-	console.log(d1.getTime())
-	console.log(d2.getTime())
-	return d1.getTime() == d2.getTime()
+function getCycleSeqence(date1){
+    var currentCycle = getCycle(new Date())
+    var baseCycle = getCycle(service.serviceStartDate)
+    var seq = currentCycle - baseCycle
+    return seq > 0 ? seq : -1 
+}
+
+function getCycle(date){
+	var d1 = new Date(Math.floor(date/60000)*60000)
+	return d1.getTime() 
 }
 */
