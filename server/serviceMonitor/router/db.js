@@ -240,9 +240,10 @@ router.post('/executeService', cors(), function(req, res) {
     })
 })
 
-router.post('/getServiceApplication', function(req, res) {
+router.post('/getServiceApplication',cors(), function(req, res) {
     dao.getServiceById(req, res, function(err, res, drone){
         if(err) return res.status(500).send("fail")
+        console.log(drone)
         res.status(200).send(drone);
     })
 }) 
@@ -265,6 +266,15 @@ router.post('/saveInputBlob', function(req, res) {
             res.json("ok")
         })
     });
+    // 1511701830769
+}) 
+
+router.post('/getBlobData',cors(), function(req, res) {
+    var path = req.body.path
+    console.log(path)
+    var stream = fs.readFileSync(path)
+    var data = JSON.parse(JSON.parse(stream))
+    res.json(data)
     // 1511701830769
 }) 
 // router.post('/getInputBlob', function(req, res) {

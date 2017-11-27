@@ -1,6 +1,7 @@
 
 var request = require('request')
 var async = require('async');
+var request = require('request')
 
 var dir = new Map();
 dir.set('view', __dirname +"/../view/")
@@ -19,6 +20,8 @@ var errCount = 0
 // }, 1000); 
 var taskTick = false
 var tempTickStack = 0
+var service;
+var inputStream
 function main(count){
     // 매 주기 마다 상태를 체크한다.
     // 
@@ -32,7 +35,7 @@ function main(count){
                 return false
             }
             // 특정 주기를 기준으로 돌려야 한다.
-            if(tempTickStack > 3){
+            if(tempTickStack > 1){
                 tempTickStack = 0
                 taskTick = true
             }
@@ -64,26 +67,61 @@ function main(count){
         function (err) {
             if(err) console.log(err.message)
             // 5 seconds have passed
-            process.exit()
+            exitProcess()
         }
     )
 }
 function readyForTask(){
-    // 드론 최초 위치 잡기
-    // 다 잡으면 pause 풀기
-    setTimeout(function(){
-               
-interrupt.pause = false
-            }, 1000); 
+    // serviceId 챙겨오기
+    async.waterfall([
+        getServiceData,
+        getInputData,
+        function(result, callback){
+            // 드론 최초 위치 잡기
+            // 다 잡으면 pause 풀기
+            callback(null, result)
+        }
+      ], function (err, result) {
+        interrupt.pause = false
+      });
+    // service 가져오기
+
 }
+function getServiceData(callback){
+    // serviceId 챙겨오기
+    var serviceId = process.argv[3]    
+
+    request({
+        url : "http://localhost:3002/getServiceApplication",
+        method:"POST",
+        json:true,
+        body:{serviceId},
+        },function (err, response, body) {
+            if (err) callback(err, true)
+            service = response.body
+            callback(null, response.body)
+        }
+    )
+}
+// 데이터 읽어와서 변수에 저장
+function getInputData(result, callback){ 
+    
+        request({
+            url : "http://localhost:3002/getBlobData",
+            method:"POST",
+            json:true,
+            body:{path:service.blob.inputBasePath + service.blob.fileName},
+            },function (err, response, body) {
+                if (err) callback(err, true)
+                inputStream = response.body
+                callback(null, response.body)
+            }
+        )
+    }
 function mainTask(callback){
     taskTick = false
 
-    // 드론 최초 위치 잡기
-
-    // serviceId 챙겨오기
-    // service 가져오기
-    // 데이터 읽어와서 변수에 저장
+    
     // 클러스터 돌려서 변수에 저장
     // 알고리즘 돌려서 결과 변수에 저장
     // 결과물 파일 출력
@@ -96,8 +134,13 @@ function mainTask(callback){
         console.log("func start@@@@@@@@@@@@@@@@@@@@@@@@@@2")
 
         async.waterfall([
-            task1,
-            task2
+            function(callback){
+                callback(null, "none")
+            },
+            function(result, callback){
+
+                callback(null, result)
+            }
           ], function (err, result) {
             mutex.lock = false
             console.log("func finished.##################")
@@ -107,17 +150,30 @@ function mainTask(callback){
         errCount++; //시간이 됬는데 lock 안풀려서 진입 못하는 횟수 증가
     }
 }
-function task1(callback){
-    mutex.timer = setTimeout(function(){
-        console.log("ok1")
-        callback(null, "ok1")
-    }, 1000);
-}
 
-function task2(result, callback){
-    mutex.timer = setTimeout(function(){
-        console.log("ok2")
-        callback(null, "ok2")
-    }, 1000);
+function makeClusterData(){
+
+}
+function runAlgorithm(){
+
+}
+function writeResult(){
+
+}
+function droneControl(){
+
+}
+function exitProcess(){
+    // db 등 정리 
+    process.exit()
 }
 module.exports.main = main
+/*
+function isSameCycle(date1, date2){
+	var d1 = new Date(Math.floor(date1/60000)*60000)
+	var d2 = new Date(Math.floor(date2/60000)*60000)
+	console.log(d1.getTime())
+	console.log(d2.getTime())
+	return d1.getTime() == d2.getTime()
+}
+*/

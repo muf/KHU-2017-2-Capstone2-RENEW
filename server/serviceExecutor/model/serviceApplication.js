@@ -14,28 +14,32 @@ var serviceApplicationSchema = new mongoose.Schema({
             lng : { type: Number, default: 0 }
         }
     },
+    blob:{
+        inputBasePath:{type:String, default: '/Users/junghyun.park/Desktop/git/KHU-2017-2-Capstone2-RENEW/blob/input/'},
+        outputBasePath:{type:String, default: '/Users/junghyun.park/Desktop/git/KHU-2017-2-Capstone2-RENEW/blob/output/'},
+        fileName: {type: String, default:""}
+    },
     drone:{
-        min : { type: Number, default: 0 },
-        max : { type: Number, default: 0 },
-        current :{type: Number, default: 0},
+        num : { type: Number, default: 0 },
         list : [{
-            id: Number,
-            ip: String
+            id: String
         }]
     },
     contact:{
         email : { type: String, default: "" },
         number : {type: String, default: "" },
     },
-    state: { type: String, default: 'applied' }, // 'submit / finished / denied / applied'
-    server: {
+    state: { type: String, default: 'applied' }, // 'submit / finished / denied / applied / execute'
+    server: { // executor server
+        pid: {type: Number, default: -1 },
         ip: { type: String, default: '0.0.0.0' },
-        port: { type: String, default: '3005' }
+        port: { type: Number, default: -1 }
     }
 });
 
-serviceApplicationSchema.statics.findServicesByState = function(state, element) {
-    return this.find({ state: new RegExp(state, 'i') }, element);
-  };
-  
+
+serviceApplicationSchema.statics.findByState = function(states, element) {
+    return this.find({ state: {$in: states}}, element)
+}
+
 module.exports = mongoose.model('serviceApplication',serviceApplicationSchema);

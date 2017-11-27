@@ -29,6 +29,7 @@ function applyInputData(){
     input = []
     data = []
     app.map.wrappers.inputMarkerWrapper.markers.forEach(function(elem){
+        elem.node.label = elem.label
         data.push(elem.node)
     },data)
 
@@ -40,6 +41,7 @@ function applyInputData(){
         var newDate = 
             data.map(function(node){
                 var newNode = app.map.wrappers.inputMarkerWrapper.moveNode(node) 
+                newNode.label = node.label
                 return newNode
             })
         input.push(newDate)
