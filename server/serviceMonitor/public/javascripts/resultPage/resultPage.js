@@ -2,6 +2,7 @@
 var app
 var serviceId = location.href.split("serviceId=")[1]
 var service
+var data
 function initRegisterPage(){
 
     $.ajax({
@@ -25,6 +26,26 @@ function initRegisterPage(){
         }
     })
     app = new inputMarkerWrapper(new mapEventWrapper(baseMapHandler))
+    $.ajax({
+        url : "/getServiceApplication",
+        type: "POST",
+        data : {
+            serviceId: serviceId
+        },
+        success: function(data, textStatus, jqXHR)
+        {
+            if(data.err!=undefined){
+                alert(data.err.message)
+            }
+            else{
+                service = data
+            }              
+        },
+        error: function (jqXHR, textStatus, errorThrown)
+        {
+            alert("Internal Error")     
+        }
+    })
 }
 function applyInputData(){
     input = []
