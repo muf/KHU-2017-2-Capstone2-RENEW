@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<title> AP in the Sky(result Page)</title>
+  <% include ./common/header.ejs %>
+    <!-- Custom CSS -->
+    <link rel='stylesheet' href='/css/common/resultPage/nav-bar.css' />
+    <link rel='stylesheet' href='/css/resultPage/resultPage.css' />
+    <link rel='stylesheet' href='/css/common/map.css' />
+   
+     <!--JS -->
+    <script src="/javascripts/common/map.js"></script>      
+    <script src="/javascripts/common/mapHandlerObject.js"></script>  
+    <script src="/javascripts/resultPage/mapEventWrapper.js"></script> 
+    <script src="/javascripts/resultPage/inputMarkerWrapper.js"></script> 
+    <script src="/javascripts/resultPage/resultPage.js"></script>
+    <!-- datetime picker assets -->   
+    <script type="text/javascript" src="/bower_components/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="/bower_components/moment/min/moment.min.js"></script>
+    <script type="text/javascript" src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
+    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" />
+
+
+  </head>
+  <body>  
+    <% include ./common/resultPage/nav-bar.ejs %>
+
+    <div id="main-container">
+      <!-- #map-container>#1 -->
+      <div id="map-container">
+        <div id="map"></div>
+      </div>
+      <!-- #side-container>#2 -->
+      <div id="side-container">
+          <div id = "side-areaInfo-container">         
+          </div> <!-- side areaInfo container -->
+
+          <div id ="side-table-container">  
+            <table class="table">
+              <thead>
+              </thead>
+              <% for(var i = 0; i < data.length; i++){ %>
+                <tr>
+                  <td ><%= i %></td>
+                </tr>
+              <% } %>
+              <tbody>
+              </tbody>
+
+            </table>
+          </div><!-- side table container -->
+
+          <div id ="side-button-container">
+            <button type="button" id="select-area" class="btn btn-info" onclick="app.map.wrappers.mapEventWrapper.drawArea()"> 영역 표시 </button>
+            <button type="button" id="apply-service" class="btn btn-success" onclick="applyInputData()"> 서비스 신청 </button>
+          </div><!-- side button container -->
+
+        </div><!-- side container -->
+    </div> <!-- main container  -->
+    
+     <!-- div id = map 을 찾기 때문에 div map 뒤에 호출해야 한다. -->
+    <!--등록된 key를 이용해서 구글 API 요청. 추가로 libraries=places 라이브러리 호출. callback=initMap-->
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAZDrALehkO3yRRrA6iqQnp6t7BrKTjjfU&libraries=places&callback=initMap"></script>
+   <!-- map과 과련된 script들도 뒤에 호출해야 한다. -->
+    <!-- <script src="/javascripts/side/test_side.js"></script>
+    <script src="/javascripts/side/side.js"></script> -->
+    
+   
+    
+  </body>
+</html>

@@ -2,6 +2,8 @@
 var express = require('express')
 var router = express.Router()
 var app = express();
+var request = require('request')
+var async = require('async');
 
 var dir = new Map();
 dir.set('view', __dirname +"/../view/")
@@ -15,6 +17,13 @@ router.get('/submitServicePage',function(req, res, next) {
     dao.getServicesByState(req, res,['submit','execute'], function(err, res, services){
         if (err) return res.status(500).send("get services by state FAIL");
         res.render(dir.get('view') + '/submitServicePage.ejs',{submitList: services});
+    })
+});
+
+router.get('/finishedPage',function(req, res, next) {
+    dao.getServicesByState(req, res,['finished'], function(err, res, services){
+        if (err) return res.status(500).send("get services by state FAIL");
+        res.render(dir.get('view') + '/finishedPage.ejs',{submitList: services});
     })
 });
 
@@ -35,6 +44,40 @@ router.get('/droneManagePage',function(req, res, next) {
 router.get('/dataGeneratePage?:serviceId',function(req, res, next) {
     var serviceId = req.query.serviceId
     res.render(dir.get('view') + '/dataGeneratePage.ejs',{serviceId: serviceId})
+});
+
+router.get('/resultPage?:serviceId',function(req, res, next) {
+    var serviceId = req.query.serviceId
+    // 결과물 읽어서 json 형태로 가져온 다음 넘기자.
+    // test로 가져오자 일단.
+    req.body.serviceId = serviceId
+    async.waterfall([
+        function (callback) {  
+            dao.getServiceById(req, res, function(err, res, service){
+                if (err) callback(err, service)
+                else{
+                    callback(null, service)
+                }
+            })
+        },
+        function(result, callback){
+            req.body.path = result.blob.inputBasePath + result.blob.fileName // @@@ 임시로 inputBasePath로 설정
+            req.body.service = result
+            request({
+                url:'http://localhost:3002/getBlobData',
+                method:"POST",
+                json:true,
+                body:req.body,
+                },function (err, response, body) {
+                    if (err) callback(err, data)
+                    callback(null, body)
+                }
+            )
+        }
+      ], function (err, data) {
+            res.render(dir.get('view') + '/resultPage.ejs',{data: data})
+      });
+    
 });
 
 app.use(function(err, req, res, next) {

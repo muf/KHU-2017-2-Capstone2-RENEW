@@ -108,7 +108,11 @@ function makeGrid(cluster){
     cluster.gridArray = gridArray
 }
 function makeGroups(rawList){
-    console.log("d")
+    // 각 클러스터끼리 우선 grouping..
+    rawList.clusters.forEach(x=>makeGroup(x))
+    var gridArray = rawList.clusters.get(0).gridArray;
+    printGrid(gridArray)
+    return rawList
 }
 function makeGroup(rawList){
     console.log("d")

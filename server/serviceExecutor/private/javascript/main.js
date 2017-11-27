@@ -26,7 +26,7 @@ function main(count){
             // 매 초 확인. kill이 들어오면 즉시 종료
             count++
             // close test용 함수
-            if(count > 100000){
+            if(count > 2){
                 //interrupt.kill
                 interrupt.kill= true
             }
@@ -154,7 +154,6 @@ function mainTask(callback){
         errCount++; //시간이 됬는데 lock 안풀려서 진입 못하는 횟수 증가
     }
 }
-
 function makeClusterData(result, callback){
 
     request({
@@ -213,7 +212,17 @@ function exitProcess(){
         if(err) console.log(err)
         errList.forEach(function(err){console.log("App Err: " + err)})
         console.log("bye...")
-        process.exit()
+
+        request({
+            url : "http://localhost:3002/updateServiceApplicationState",
+            method:"POST",
+            json:true,
+            body:{state:"finished", serviceId: service._id},
+            },function (err, response, body) {
+                if (err) console.log(err)
+                process.exit()
+            }
+        )
     })
 }
 function getCycleSeqence(){
