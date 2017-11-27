@@ -83,7 +83,7 @@ function executeAction(event){
             },
             success: function(data, textStatus, jqXHR)
             {
-
+                alert("ok")
                 if(data.err!=undefined){
                     alert(data.err.message)
                     location.reload(); // 성공 시 다시 로드하여 페이지를 갱신한다.  

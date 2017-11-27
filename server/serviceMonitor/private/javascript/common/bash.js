@@ -10,12 +10,12 @@ function run(query, callback, block = false){
 
     proc.stdout.on('data', (data) => {
         result += `stdout: ${data}`
-        // console.log(`stdout: ${data}`)
+        console.log(`stdout: ${data}`)
     });
     
     proc.stderr.on('data', (data) => {
         result += `stderr: ${data}`
-        // console.log(`stderr: ${data}`)
+        console.log(`stderr: ${data}`)
     });
     
     proc.on('close', (code) => {
@@ -50,7 +50,7 @@ function run(query, callback, block = false){
                 callback({pid:proc.pid, port: stdout.trim()})
             }
         });
-    },1000)
+    },2000)
     //   var query = "lsof -Pan -p " + pid + " -i | grep \'*\' | awk \'{split($9,data,\":\"); printf(\"\\n\");printf(\"%s\",data[2])}\'"
     //   console.log(query)
     //   var data = []
@@ -80,8 +80,49 @@ function runExecutor(serviceId ,callback){
         })
     })
 }
-  
+
+function runClusterMaker(path ,callback){
+    var program = 'r'
+    var params = {
+        code: '/Users/junghyun.park/Desktop/git/KHU-2017-2-Capstone2-RENEW/app.js',
+        path: path
+    }
+    var query = {program: program, params: params}
+    console.log(query)
+    runR(query, function(clusterPath){
+        callback(clusterPath)
+    })
+}
+
+function runR(query, callback){
+    var path = query.params.path
+    var query = `echo ${path}`
+    // var clusterPath = path.split('.input')[0]+'.cluster'
+    var clusterPath = path
+    console.log(query)
+    setTimeout(function(){    
+        exec(query, (error, stdout, stderr) => {
+            if (error) {
+            console.error(`exec error: ${error}`)
+                return
+            }
+            console.log(`stdout: ${stdout}`)
+            console.log(`stderr: ${stderr}`)
+            
+            if(typeof callback === 'function'){
+                callback(clusterPath)
+            }
+        });
+    },2000)
+    //   var query = "lsof -Pan -p " + pid + " -i | grep \'*\' | awk \'{split($9,data,\":\"); printf(\"\\n\");printf(\"%s\",data[2])}\'"
+    //   console.log(query)
+    //   var data = []
+    //   var proc = exec(query, function(err,stdout,stderr){
+    //       callback({err, stdout, stderr})
+    //   })
+  }
 module.exports.run = run
+module.exports.runClusterMaker = runClusterMaker
 module.exports.getRealPid = getRealPid
 module.exports.getPortByPid = getPortByPid
 module.exports.runExecutor = runExecutor

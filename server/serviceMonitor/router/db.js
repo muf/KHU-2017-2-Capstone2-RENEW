@@ -94,10 +94,23 @@ router.post('/applyCheck',cors(), function(req, res) {
                 var flag = true
                 // 충전시간 및 비행 시간도 고려해야함. 나중에 중심부까지 날아가는 시간 고려하는 것도 만들어야 함. 일단은 고려하지 않음.
                 drone.services.forEach(function(service){
-                    if(service.serviceStartDate <= new Date(serviceEndDate)){
-                        flag = false
-                    }
-                    if(service.serviceEndDate >= new Date(serviceStartDate)){
+                    // if(service.serviceStartDate <= new Date(serviceEndDate)){
+                    //     flag = false
+                    // }
+                    // if(service.serviceEndDate >= new Date(serviceStartDate)){
+                    //     flag = false
+                    // }
+                    var condition1 = 
+                        service.serviceStartDate <= new Date(serviceEndDate) 
+                        &&  new Date(serviceEndDate) <= service.serviceEndDate
+                    var condition2 = 
+                        service.serviceStartDate <= new Date(serviceStartDate) 
+                        &&  new Date(serviceStartDate) <= service.serviceEndDate
+                    var condition3 = 
+                        service.serviceStartDate > new Date(serviceStartDate) 
+                        &&  new Date(serviceEndDate) > service.serviceEndDate
+                    
+                    if(condition1 || condition2 || condition3){
                         flag = false
                     }
                 },serviceStartDate, serviceEndDate, flag)
@@ -243,12 +256,11 @@ router.post('/executeService', cors(), function(req, res) {
 router.post('/getServiceApplication',cors(), function(req, res) {
     dao.getServiceById(req, res, function(err, res, drone){
         if(err) return res.status(500).send("fail")
-        console.log(drone)
         res.status(200).send(drone);
     })
 }) 
 
-router.post('/saveInputBlob', function(req, res) {
+router.post('/saveInputBlob', cors(), function(req, res) {
     var input = JSON.stringify(req.body.input)
     var serviceId = req.body.serviceId
     var inputPath = '/Users/junghyun.park/Desktop/git/KHU-2017-2-Capstone2-RENEW/blob/input/'
@@ -268,6 +280,33 @@ router.post('/saveInputBlob', function(req, res) {
     });
     // 1511701830769
 }) 
+router.post('/saveOutputBlob', cors(), function(req, res) {
+    var input = JSON.stringify(req.body.input)
+    var serviceId = req.body.serviceId
+    var inputPath = '/Users/junghyun.park/Desktop/git/KHU-2017-2-Capstone2-RENEW/blob/output/'
+
+    async.waterfall([
+        function (callback) {  
+            dao.getServiceById(req, res, function(err, res, service){
+                if (err) callback(err, service)
+                else{
+                    callback(null, service)
+                }
+            })
+        }
+      ], function (err, service) {
+        fs.writeFile(inputPath + service.blob.fileName, input, function(err) {
+            if(err) {
+                console.log(err)
+                return res.status(500).send("fail")
+            }
+            res.json("ok")
+        });
+      });
+
+   
+    // 1511701830769
+}) 
 
 router.post('/getBlobData',cors(), function(req, res) {
     var path = req.body.path
@@ -276,6 +315,34 @@ router.post('/getBlobData',cors(), function(req, res) {
     var data = JSON.parse(JSON.parse(stream))
     res.json(data)
     // 1511701830769
+}) 
+router.post('/getClusteredData', cors(), function(req, res) {
+    var path = req.body.path
+    var seq = req.body.seq
+    async.waterfall([
+        function(callback){
+            request({
+                url : "http://localhost:3002/makeClusteredData",
+                method:"POST",
+                json:true,
+                body:{path, seq},
+                },function (err, response, path) {
+                    if (err) callback(err, true)
+                    callback(null, path)
+                }       
+        )}
+        ], function (err, path) {
+            if(err) res.status(500).send("fail")
+            console.log(path)
+            var stream = fs.readFileSync(path)
+            var data = JSON.parse(JSON.parse(stream))
+            // 임시로 cluster 넣어서 진행
+            // 여기서 에러 난다..? 아 그게 아니라 없는거라 그런건가 뭐였지 @@@@@@@@@@@
+            data[seq].forEach(function(elem){
+                elem.cluster = Math.floor(Math.random()*3)
+            })
+            res.json(data[seq])
+        });
 }) 
 // router.post('/getInputBlob', function(req, res) {
 //     var input = JSON.stringify(req.body.input)
