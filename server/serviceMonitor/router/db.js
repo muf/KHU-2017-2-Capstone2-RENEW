@@ -61,7 +61,7 @@ router.post('/createServiceApplication', cors(), function(req, res) {
         res.json(results);
     })
 })
-router.post('/addDrone', function(req, res) {
+router.post('/addDrone',cors(), function(req, res) {
     dao.putDrone(req, res, function(err, res, drone){
         if(err) return res.status(500).send("fail")
         res.status(200).send(drone);

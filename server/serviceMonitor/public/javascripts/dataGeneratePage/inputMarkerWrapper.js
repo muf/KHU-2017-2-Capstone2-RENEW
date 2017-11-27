@@ -15,8 +15,9 @@ var inputMarkerWrapper = function(_mapHandler){
         for(var i = 0; i < count; i++){
             var data = Math.random(i)*200 + 100 // 100 ~ 300
             var lat = Math.random(i)*(service.bounds.max.lat - service.bounds.min.lat) + (service.bounds.min.lat) // min ~ max
-            var lng = Math.random(i)*(service.bounds.max.lng - service.bounds.min.lng) + (service.bounds.min.lng) // min ~max
-            _mapHandler.addMarker(this.markers, lat, lng, {data, lat, lng}, this.markers.length, 0)
+            var lng = Math.random(i)*(service.bounds.max.lng - service.bounds.min.lng) + (service.bounds.min.lng) // min ~ max
+            var marker = _mapHandler.addMarker(this.markers, lat, lng, {data, lat, lng}, this.markers.length, 0)
+            marker.setDraggable(true)
         }
     }
     this.setInterval = function(){

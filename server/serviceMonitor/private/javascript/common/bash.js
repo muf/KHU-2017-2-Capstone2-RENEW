@@ -1,6 +1,6 @@
 
 var fs = require('fs');
-const { exec,spawn } = require('child_process');
+const { exec,spawn } = require('child_process')
 const logPath = "/Users/junghyun.park/Desktop/git/KHU-2017-2-Capstone2-RENEW/sh_scripts/log"
 function run(query, callback, block = false){
     var result=""

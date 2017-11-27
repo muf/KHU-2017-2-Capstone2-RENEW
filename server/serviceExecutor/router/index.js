@@ -14,12 +14,12 @@ var appRunner = require(dir.get('private') + 'javascript/main.js')
 router.get('/',function(req, res, next) {
   console.log('get /')
   res.redirect('/run')
-});
+})
  
 router.get('/run',function(req, res, next) {
   console.log('get /run')
   res.render(dir.get('view') + '/index.ejs', {count:count})
-});
+})
 
 // @app use
 app.use(function(err, req, res, next) {

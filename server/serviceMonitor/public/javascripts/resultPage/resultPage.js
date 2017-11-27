@@ -2,7 +2,7 @@
 var app
 var serviceId = location.href.split("serviceId=")[1]
 var service
-var data
+var dataList
 function initRegisterPage(){
 
     $.ajax({
@@ -18,34 +18,38 @@ function initRegisterPage(){
             }
             else{
                 service = data
-            }              
+            }   
+            
+            $.ajax({
+                url : "/getBlobData",
+                type: "POST",
+                data : {
+                    // @@
+                    path: service.blob.inputBasePath+service.blob.fileName
+                },
+                success: function(result, textStatus, jqXHR)
+                {
+                    if(result.err!=undefined){
+                        alert(result.err.message)
+                    }
+                    else{
+                        dataList = result
+                    }             
+                    addTableEvents() 
+                },
+                error: function (jqXHR, textStatus, errorThrown)
+                {
+                    alert("Internal Error")     
+                }
+            })           
         },
         error: function (jqXHR, textStatus, errorThrown)
         {
             alert("Internal Error")     
         }
     })
-    app = new inputMarkerWrapper(new mapEventWrapper(baseMapHandler))
-    $.ajax({
-        url : "/getServiceApplication",
-        type: "POST",
-        data : {
-            serviceId: serviceId
-        },
-        success: function(data, textStatus, jqXHR)
-        {
-            if(data.err!=undefined){
-                alert(data.err.message)
-            }
-            else{
-                service = data
-            }              
-        },
-        error: function (jqXHR, textStatus, errorThrown)
-        {
-            alert("Internal Error")     
-        }
-    })
+    app = new outputMarkerWrapper(new mapEventWrapper(baseMapHandler))
+
 }
 function applyInputData(){
     input = []
@@ -97,4 +101,13 @@ function applyInputData(){
     })
 }
     
-
+function addTableEvents(){
+    $('#side-table-container tbody tr').click(function(event){
+        var tr = event.currentTarget
+        var index = tr.getElementsByTagName('td')[0].innerHTML
+        app.map.wrappers.outputMarkerWrapper.clearAll()
+        dataList[index].forEach( x => {
+            app.map.wrappers.outputMarkerWrapper.addMarker(x)
+        })
+      })
+  }

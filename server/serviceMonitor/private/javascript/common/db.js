@@ -2,12 +2,21 @@
 // @ drone
 var drone = require('../../../model/drone')
 function putDrone(req, res, callback){
-    drone.create({
-        ip: req.body.ip,
-        port: req.body.port,
-        model: req.body.model,
-        state: req.body.state
-    },
+    drone.findOneAndUpdate({
+            mac: req.body.mac            
+        },
+        {$set:{ ip: req.body.ip, port: req.body.port}},
+        {
+          upsert: true,
+          returnNewDocument: true
+        },
+    // drone.create({
+    //     ip: req.body.ip,
+    //     port: req.body.port,
+    //     model: req.body.model,
+    //     state: req.body.state,
+    //     mac: req.body.mac
+    // },
     function(err, drone) {
         if(typeof callback === 'function') {
             if(err) return callback(err, res, drone)
