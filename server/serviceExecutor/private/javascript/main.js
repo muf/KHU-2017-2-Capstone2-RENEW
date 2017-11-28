@@ -1,6 +1,6 @@
 
 var request = require('request')
-var async = require('async');
+var async = require('async')
 var request = require('request')
 
 
@@ -16,6 +16,9 @@ var service; //lazy인듯
 var seq = -1;
 var errList= []
 var outputFileData = [];
+function test(clusters){
+    console.log(clusters)
+}
 function main(count){
     // 매 주기 마다 상태를 체크한다.
     // 
@@ -26,7 +29,7 @@ function main(count){
             // 매 초 확인. kill이 들어오면 즉시 종료
             count++
             // close test용 함수
-            if(count > 2){
+            if(count > 5){
                 //interrupt.kill
                 interrupt.kill= true
             }
@@ -38,12 +41,12 @@ function main(count){
             if(!mutex.lock && !interrupt.pause){
 
                 var nextSeq = getCycleSeqence()
+                nextSeq = seq +1;//test@@@
                 if(nextSeq < 0) {
                     errList.push("시간이 이미 만료된 서비스")
                     interrupt.kill = true
                 }
                 
-                // -1? 이면 사실상 끝난거임..
                 if(nextSeq > seq ){
                     console.log(`seq : ${seq} -> ${nextSeq}`)
                     seq = nextSeq // 더 큰 seq라면 업데이트
@@ -172,6 +175,7 @@ function makeClusterData(result, callback){
 function runAlgorithm(result, callback){
     console.log("run algorithm")
     result = logic.makeClusterList(result)
+    test(result)
     result = logic.makeGrids(result)
     result = logic.makeGroups(result)
 
@@ -213,16 +217,16 @@ function exitProcess(){
         errList.forEach(function(err){console.log("App Err: " + err)})
         console.log("bye...")
 
-        request({
-            url : "http://localhost:3002/updateServiceApplicationState",
-            method:"POST",
-            json:true,
-            body:{state:"finished", serviceId: service._id},
-            },function (err, response, body) {
-                if (err) console.log(err)
-                process.exit()
-            }
-        )
+        // request({
+        //     url : "http://localhost:3002/updateServiceApplicationState",
+        //     method:"POST",
+        //     json:true,
+        //     body:{state:"finished", serviceId: service._id},
+        //     },function (err, response, body) {
+        //         if (err) console.log(err)
+        //         process.exit()
+        //     }
+        // )
     })
 }
 function getCycleSeqence(){

@@ -36,6 +36,8 @@
                 <th>모델명</th>
                 <th>상태</th> 
                 <th>MAC</th>
+                <th>위도</th> 
+                <th>경도</th> 
               </tr>
           </thead>
           <tbody>
@@ -47,6 +49,8 @@
                 <td><%= droneList[i].model %></td>
                 <td><%= droneList[i].state %></td>
                 <td><%= droneList[i].mac %></td>
+                <td><%= droneList[i].gps.lat %></td>
+                <td><%= droneList[i].gps.lng %></td>
               </tr>
             <% } %>
           </tbody>
@@ -71,6 +75,7 @@
               <th>포트</th>
               <th>모델명</th>
               <th>상태</th> 
+              <th>mac</th> 
             </tr>
           </thead>
           <tbody>
@@ -100,6 +105,13 @@
                   <form>
                       <div class="form-group">
                         <input type="text" class="form-control" id="drone-state">
+                      </div>
+                    </form>
+                </td>
+                <td>
+                  <form>
+                      <div class="form-group">
+                        <input type="text" class="form-control" id="drone-mac">
                       </div>
                     </form>
                 </td>

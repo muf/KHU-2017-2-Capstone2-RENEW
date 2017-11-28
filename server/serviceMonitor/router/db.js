@@ -5,8 +5,11 @@ var app = express()
 var cors = require('cors');
 var async = require('async');
 var fs = require('fs');
+
+var clustering = require('density-clustering')
+var dbscan = new clustering.DBSCAN()
 // @ create db connector
-var mongoose = require('mongoose');
+var mongoose = require('mongoose')
 mongoose.connect('mongodb://root:admin@ds117136.mlab.com:17136/ap-in-the-sky',{
     useMongoClient: true
   })
@@ -22,6 +25,7 @@ dir.set('private', __dirname +"/../private/")
 
 // @ load models & methods
 var dao = require(dir.get('private') + 'javascript/common/db.js')
+var util = require(dir.get('private') + 'javascript/common/util.js')
 
 // APIs
 // cross domain request 허용
@@ -62,6 +66,12 @@ router.post('/createServiceApplication', cors(), function(req, res) {
     })
 })
 router.post('/addDrone',cors(), function(req, res) {
+    dao.putDrone(req, res, function(err, res, drone){
+        if(err) return res.status(500).send("fail")
+        res.status(200).send(drone);
+    })
+})
+router.post('/updateDroneGPS',cors(), function(req, res) {
     dao.putDrone(req, res, function(err, res, drone){
         if(err) return res.status(500).send("fail")
         res.status(200).send(drone);
@@ -337,10 +347,16 @@ router.post('/getClusteredData', cors(), function(req, res) {
             var stream = fs.readFileSync(path)
             var data = JSON.parse(JSON.parse(stream))
             // 임시로 cluster 넣어서 진행
-            // 여기서 에러 난다..? 아 그게 아니라 없는거라 그런건가 뭐였지 @@@@@@@@@@@
-            data[seq].forEach(function(elem){
-                elem.cluster = Math.floor(Math.random()*3)
-            })
+            console.log(util)
+            result = dbscan.run(data[seq], 10, 3, util.distanceTo);
+            data[seq].forEach(x=>{x.cluster=0},data[seq])
+            for(idx in result){
+                for(jdx in result[idx]){
+                    data[seq][result[idx][jdx]].cluster = Number(idx)+1
+                }
+            }
+            console.log("result : " + JSON.stringify(result))
+            console.log("noise: " + JSON.stringify(result))
             res.json(data[seq])
         });
 }) 

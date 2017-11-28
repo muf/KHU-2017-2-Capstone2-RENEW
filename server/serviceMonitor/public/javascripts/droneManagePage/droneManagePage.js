@@ -20,12 +20,14 @@ function addDrone(){
     var port = $('#drone-port').val()
     var model = $('#drone-model').val()
     var state = $('#drone-state').val()
+    var mac = $('#drone-mac').val()
     var data={};
 
     if(ip!="") data.ip = ip;
     if(port!="") data.port = port;
     if(model!="") data.model = model;
     if(state!="") data.state = state;
+    if(mac!="") data.mac = mac;
 
     $.ajax({
         url : "/addDrone",

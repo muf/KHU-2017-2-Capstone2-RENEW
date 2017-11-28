@@ -2,21 +2,25 @@
 // @ drone
 var drone = require('../../../model/drone')
 function putDrone(req, res, callback){
+    data = {}
+    if(req.body.ip != null)  data.ip = req.body.ip
+    if(req.body.port != null)  data.port = req.body.port
+    if(req.body.mac != null)  data.mac = req.body.mac
+    if(req.body.state != null)  data.state = req.body.state
+    if(req.body.gps != null){
+        if(req.body.gps.lat != null)  data.gps.lat = req.body.gps.lat
+        if(req.body.gps.lng != null)  data.gps.lng = req.body.gps.lng
+    }
+    
+    // { ip: req.body.ip, port: req.body.port, mac: req.body.mac, state: req.body.state}
     drone.findOneAndUpdate({
             mac: req.body.mac            
         },
-        {$set:{ ip: req.body.ip, port: req.body.port}},
+        {$set: data },
         {
           upsert: true,
           returnNewDocument: true
         },
-    // drone.create({
-    //     ip: req.body.ip,
-    //     port: req.body.port,
-    //     model: req.body.model,
-    //     state: req.body.state,
-    //     mac: req.body.mac
-    // },
     function(err, drone) {
         if(typeof callback === 'function') {
             if(err) return callback(err, res, drone)
