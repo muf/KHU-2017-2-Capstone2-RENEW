@@ -29,7 +29,7 @@ function main(count){
             // 매 초 확인. kill이 들어오면 즉시 종료
             count++
             // close test용 함수
-            if(count > 5){
+            if(count > 50){
                 //interrupt.kill
                 interrupt.kill= true
             }
@@ -191,12 +191,40 @@ function controlDrones(result, callback){
     // 드론 3대.. 이동해야하는 위치도 3군데.. 가장 가까운 드론을 우선 배치하는게 맞음.
     // 즉 n개 자리. n개 드론. n!... 아놔 이건 어떡하지 ㅋㅋㅋ 모르는척 할까.. mcmf로 해결 가능 나중에 임베딩해서 쓰자. 일단 패스
     // result = logic.mcmf(result.drones.slice(0,3), service.drone.list)
-    for(var i = 0; i < service.drone.list; i++){
-        var drone = result.drones[i]
-        var position = drone.position
-        // 해당 위치로 드론 병령 전송 parrarell 방식으로 진행 후 확인. 문제 발생 시 ... 몰름 ㅎㅎ
-    }
-    callback(null, result)
+    var i = 0;
+    tasks = [];
+   
+
+
+    async.waterfall([
+        function(callback){
+            var tasks;
+            async.whilst(
+                function () { 
+                    // 매 초 확인. kill이 들어오면 즉시 종료
+                    console.log("@@@ i : " + i)
+                    i++
+                },function(callback){
+                    var drone = result.drones[i]
+                    var position = drone.position
+                    tasks.push(function(callback){
+                        setTimeout(function(){
+                            callback(null, "ok: " + i)
+                         }, 1000); 
+                    })
+                },function(err){
+                    callback(null)
+            })
+        },
+        function(result, callback){
+            async.waterfall(tasks, function (err, result) {
+                callback(null, result)
+            });
+        }
+    ],function (err, result) {
+        callback(null, result)
+      });
+
 }
 function writeResult(callback){
     //outputFileData
