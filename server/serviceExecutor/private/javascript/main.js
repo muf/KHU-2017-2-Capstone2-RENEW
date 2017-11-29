@@ -178,6 +178,7 @@ function runAlgorithm(result, callback){
     test(result)
     result = logic.makeGrids(result)
     result = logic.makeGroups(result)
+    result = logic.selectingDrones(result)
 
     // 결과 만들어서 push push 
     var outputData = result

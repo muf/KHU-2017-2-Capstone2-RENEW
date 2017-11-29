@@ -139,17 +139,16 @@ function addDrone(drones){
 }
 function makeGroup(cluster, clusters){
     var drones = clusters.drones
-    groupNodes3(clusters.drones, cluster)
-    console.log("test")
-
+    groupNodes2(clusters.drones, cluster,true)
+    groupNodes1(clusters.drones, cluster, 5) // 나머지도 커버 시도
+    groupNodes1(clusters.drones, cluster, 1) // 나머지도 커버 시도. 나눠서 하는 이유는 추후 드론 댓수에 따른 계산 넣을때 다 커버하고 싶은 경우를 고려.
 }
 // threshold : 노드 할당이 일정 수 이하 일떄, 드론을 배치할 것인지에 대한 경계 값
 // nodeCoverage : 노드 할당 가능 갯수
 // apCoverage : 드론이 커버 가능한 직경
-// x,y가 중심부로 이동하면서 각 분면별로 처리하는 방식. 남은 것은 하나의 방향으로 전체 커버 시도
-// 이때 x,y는 중심부 좌표 까지 이동. 다른 분면의 노드도 취급
-function groupNodes2(drones, cluster, threshold = 10, nodeCoverage = 10, apCoverage = 100){
-
+// x,y가 하나의 방향으로 끝까지 이동하면서 노드 취급
+function groupNodes1(drones, cluster, threshold = 10, nodeCoverage = 10, apCoverage = 100){
+    
     var gridArray = cluster.gridArray
     var gridSize = cluster.gridArray.gridSize // 10 미터
     var meter = cluster.gridArray.meter
@@ -159,101 +158,14 @@ function groupNodes2(drones, cluster, threshold = 10, nodeCoverage = 10, apCover
     var apCoverageSize = Math.floor(apCoverage / gridSize) // 드론 커버리지 grid 칸 수
     var centerPoint = getGridPos(gridArray,gridArray.centroid.lat, gridArray.centroid.lng)
 
-     // 2사분면
-     console.log("2사분면")
-    for(var exi = 0; exi <  centerPoint.x; exi++){
-        for(var exj = 0; exj < centerPoint.y; exj++){  
+        // 2사분면
+        console.log("전체 커버")
+    for(var exi = 0; exi <  gridArray.x; exi++){
+        for(var exj = 0; exj < gridArray.y; exj++){  
 
             // 하나의 드론 영역 안에서의 작업
             bufferQueue = [];
             for(var ini = exi; ini < exi + apCoverageSize; ini++){
-                for(var inj = exj; inj < exj + apCoverageSize; inj++){
-                    // 하나의 cell 안에서의 작업
-                    // 안에 있는 노드들을 buffer에 하나씩 (큐에) 삽입
-                    // 이전에 남아있던 노드 뒤에 하나씩 추가된다
-                    if(gridArray[ini]==undefined || gridArray[ini][inj]==undefined){
-
-                    }
-                    // 유효한 그리드인 경우 그 안의 마커를 하나씩 버퍼에 저장
-                    else{        
-                        for(idx in gridArray[ini][inj]){
-                            var node = gridArray[ini][inj][idx]
-                            node.grid = {x:ini, y:inj,idx:Number(idx)}
-                            bufferQueue.push(node)
-                        }
-                    }
-                }
-            } // for 하나의 셀 반복문. buffer 삽입
-            coreProcess(drones, cluster, bufferQueue, threshold, nodeCoverage)
-        }
-    }
-    printGrid(gridArray)
-    // 1사분면
-     console.log("1사분면")
-    for(var exi = 0; exi <  centerPoint.x; exi++){
-        for(var exj = gridArray.y-1; exj > centerPoint.y; exj--){  
-
-            // 하나의 드론 영역 안에서의 작업
-            bufferQueue = [];
-            for(var ini = exi; ini < exi + apCoverageSize; ini++){
-                for(var inj = exj + apCoverageSize -1 ; inj >= exj; inj--){
-                    // 하나의 cell 안에서의 작업
-                    // 안에 있는 노드들을 buffer에 하나씩 (큐에) 삽입
-                    // 이전에 남아있던 노드 뒤에 하나씩 추가된다
-                    if(gridArray[ini]==undefined || gridArray[ini][inj]==undefined){
-
-                    }
-                    // 유효한 그리드인 경우 그 안의 마커를 하나씩 버퍼에 저장
-                    else{        
-                        for(idx in gridArray[ini][inj]){
-                            var node = gridArray[ini][inj][idx]
-                            node.grid = {x:ini, y:inj,idx:Number(idx)}
-                            bufferQueue.push(node)
-                        }
-                    }
-                }
-            } // for 하나의 셀 반복문. buffer 삽입
-            coreProcess(drones, cluster, bufferQueue, threshold, nodeCoverage)
-        }
-    }
-    printGrid(gridArray)
-    // 4사분면
-     console.log("4사분면")
-    for(var exi = gridArray.x-1; exi >  centerPoint.x; exi--){
-        for(var exj = gridArray.y-1; exj > centerPoint.y; exj--){  
-
-            // 하나의 드론 영역 안에서의 작업
-            bufferQueue = [];
-            for(var ini = exi + apCoverageSize - 1; ini >= exi; ini--){
-                for(var inj = exj + apCoverageSize -1 ; inj >= exj; inj--){
-                    // 하나의 cell 안에서의 작업
-                    // 안에 있는 노드들을 buffer에 하나씩 (큐에) 삽입
-                    // 이전에 남아있던 노드 뒤에 하나씩 추가된다
-                    if(gridArray[ini]==undefined || gridArray[ini][inj]==undefined){
-
-                    }
-                    // 유효한 그리드인 경우 그 안의 마커를 하나씩 버퍼에 저장
-                    else{        
-                        for(idx in gridArray[ini][inj]){
-                            var node = gridArray[ini][inj][idx]
-                            node.grid = {x:ini, y:inj,idx:Number(idx)}
-                            bufferQueue.push(node)
-                        }
-                    }
-                }
-            } // for 하나의 셀 반복문. buffer 삽입
-            coreProcess(drones, cluster, bufferQueue, threshold, nodeCoverage)
-        }
-    }
-    printGrid(gridArray)
-    // 3사분면
-     console.log("3사분면")
-    for(var exi = gridArray.x-1; exi >  centerPoint.x; exi--){
-        for(var exj = 0; exj < centerPoint.y; exj++){  
-
-            // 하나의 드론 영역 안에서의 작업
-            bufferQueue = [];
-            for(var ini = exi + apCoverageSize - 1; ini >= exi; ini--){
                 for(var inj = exj; inj < exj + apCoverageSize; inj++){
                     // 하나의 cell 안에서의 작업
                     // 안에 있는 노드들을 buffer에 하나씩 (큐에) 삽입
@@ -284,7 +196,7 @@ function groupNodes2(drones, cluster, threshold = 10, nodeCoverage = 10, apCover
 // apCoverage : 드론이 커버 가능한 직경
 // x,y가 중심부로 이동하면서 각 분면별로 처리하는 방식. 남은 것은 하나의 방향으로 전체 커버 시도
 // x,y는 중심부 까지 이동하지만 다른 분면의 노드는 건드리지 않는다.
-function groupNodes3(drones, cluster, threshold = 10, nodeCoverage = 10, apCoverage = 100){
+function groupNodes2(drones, cluster, boundary = true, threshold = 10, nodeCoverage = 10, apCoverage = 100){
 
     var gridArray = cluster.gridArray
     var gridSize = cluster.gridArray.gridSize // 10 미터
@@ -305,8 +217,10 @@ function groupNodes3(drones, cluster, threshold = 10, nodeCoverage = 10, apCover
             for(var ini = exi; ini < exi + apCoverageSize; ini++){
                 for(var inj = exj; inj < exj + apCoverageSize; inj++){
                     // 다른 분면의 노드는 취급하지 않는다.
-                    if(ini > apCoverageSize) continue
-                    if(inj > apCoverageSize) continue
+                    if(boundary){
+                        if(ini > apCoverageSize) continue
+                        if(inj > apCoverageSize) continue
+                    }
                     // 하나의 cell 안에서의 작업
                     // 안에 있는 노드들을 buffer에 하나씩 (큐에) 삽입
                     // 이전에 남아있던 노드 뒤에 하나씩 추가된다
@@ -333,12 +247,14 @@ function groupNodes3(drones, cluster, threshold = 10, nodeCoverage = 10, apCover
         for(var exj = gridArray.y-1; exj > centerPoint.y; exj--){  
 
             // 하나의 드론 영역 안에서의 작업
-            bufferQueue = [];
+            bufferQueue = [];//exj + apCoverageSize -1
             for(var ini = exi; ini < exi + apCoverageSize; ini++){
-                for(var inj = exj + apCoverageSize -1 ; inj >= exj; inj--){
+                for(var inj = exj ; inj >= exj - apCoverageSize; inj--){
                     // 다른 분면의 노드는 취급하지 않는다.
-                    if(ini > apCoverageSize) continue
-                    if(inj < apCoverageSize) continue
+                    if(boundary){
+                        if(ini > apCoverageSize) continue
+                        if(inj < apCoverageSize) continue
+                    }
                     // 하나의 cell 안에서의 작업
                     // 안에 있는 노드들을 buffer에 하나씩 (큐에) 삽입
                     // 이전에 남아있던 노드 뒤에 하나씩 추가된다
@@ -366,8 +282,13 @@ function groupNodes3(drones, cluster, threshold = 10, nodeCoverage = 10, apCover
 
             // 하나의 드론 영역 안에서의 작업
             bufferQueue = [];
-            for(var ini = exi + apCoverageSize - 1; ini >= exi; ini--){
-                for(var inj = exj + apCoverageSize -1 ; inj >= exj; inj--){
+            for(var ini = exi; ini >= exi-apCoverageSize; ini--){
+                for(var inj = exj; inj >= exj-apCoverageSize; inj--){
+                    // 다른 분면의 노드는 취급하지 않는다.
+                    if(boundary){
+                        if(ini < apCoverageSize) continue
+                        if(inj < apCoverageSize) continue
+                    }
                     // 하나의 cell 안에서의 작업
                     // 안에 있는 노드들을 buffer에 하나씩 (큐에) 삽입
                     // 이전에 남아있던 노드 뒤에 하나씩 추가된다
@@ -395,8 +316,13 @@ function groupNodes3(drones, cluster, threshold = 10, nodeCoverage = 10, apCover
 
             // 하나의 드론 영역 안에서의 작업
             bufferQueue = [];
-            for(var ini = exi + apCoverageSize - 1; ini >= exi; ini--){
+            for(var ini = exi; ini >= exi-apCoverageSize; ini--){
                 for(var inj = exj; inj < exj + apCoverageSize; inj++){
+                    // 다른 분면의 노드는 취급하지 않는다.
+                    if(boundary){
+                        if(ini < apCoverageSize) continue
+                        if(inj > apCoverageSize) continue
+                    }
                     // 하나의 cell 안에서의 작업
                     // 안에 있는 노드들을 buffer에 하나씩 (큐에) 삽입
                     // 이전에 남아있던 노드 뒤에 하나씩 추가된다
@@ -457,6 +383,10 @@ function coreProcess(drones, cluster, bufferQueue, threshold, nodeCoverage){
        // drones[drones.length-1].marker = mapHandler.makeMarker(drones[drones.length-1].position.lat, drones[drones.length-1].position.lng, drones[drones.length-1])
     }
 }
+function selectingDrones(rawList){
+    
+    return rawList
+}
 function printGrid(gridArray){
     var centroid = getGridPos(gridArray,gridArray.centroid.lat, gridArray.centroid.lng)
     var stringStream = ""
@@ -484,6 +414,7 @@ function printGrid(gridArray){
 
 module.exports.util = util
 module.exports.makeClusterList = makeClusterList
+module.exports.selectingDrones = selectingDrones
 module.exports.makeGrids = makeGrids
 module.exports.makeGrid = makeGrid
 module.exports.makeGroups = makeGroups
