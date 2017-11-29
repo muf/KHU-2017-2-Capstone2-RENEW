@@ -125,6 +125,7 @@ function makeGrid(cluster){
     gridArray.centroid.lng /= cluster.length
 
     cluster.gridArray = gridArray
+    cluster.bufferGridArray = Object.assign({}, gridArray)
 }
 function makeGroups(rawList){
     // 각 클러스터끼리 우선 grouping..
@@ -383,8 +384,24 @@ function coreProcess(drones, cluster, bufferQueue, threshold, nodeCoverage){
        // drones[drones.length-1].marker = mapHandler.makeMarker(drones[drones.length-1].position.lat, drones[drones.length-1].position.lng, drones[drones.length-1])
     }
 }
+function getNodeDensity(clusters, drone){
+    console.log("gri")
+    printGrid(clusters.clusters.get(0).gridArray)
+    console.log("buf")
+    printGrid(clusters.clusters.get(0).bufferGridArray)
+    console.log("#")
+}
 function selectingDrones(rawList){
+    var drones = rawList.drones
+    //TEST@@
+    drones.forEach(x=>{x.weight = Math.random()*100})
+    drones.forEach(x=>{
+        var assignedNodeWeight = x.nodes.length * 100
+        var nodeDensityWeight = getNodeDensity(rawList, x) * 100
+        x.weight = assignedNodeWeight + nodeDensityWeight // 0 ~ 100 arctan 그래프 활용하자.
+    })
     
+    drones.sort((x,y)=>{return x.weight > y.weight})
     return rawList
 }
 function printGrid(gridArray){
@@ -412,6 +429,50 @@ function printGrid(gridArray){
 
 
 
+function initArray(len, val){
+    var list = new Array(len)
+    for(i = 0; i < list.length; i++){
+        list[i]=val;
+    }
+    return list
+}
+function mcmf(jobs, drones){
+    var n = drones.length;
+    var m = jobs.length
+    var vt = initArray(n+m+2, 0)
+    var pv = initArray(n+m+2, -1)
+    var pe = initArray(n+m+2, -1)
+    var worker = 5, job = 5
+    
+    for(var i = 0; i < drones.length; i++){
+        for(var j = 0; i < job.length; i++){
+            vt.push({
+                v: i,
+                cost: -1 * util.distanceTo(jobs[0].position.lat, jobs[0].position.lng, ),
+                cap: 1,
+                rev: vt.length - 1
+            })
+        }
+    }
+    var vt = []; // vector<vector<Edge>>
+    var pv = [], pe = []; // vector<int>
+    var src = worker + job
+    var sink = worker + job + 1
+    for(i=0; i<n; i++){
+        
+    }
+/*
+5 5
+2 1 3 2 2
+1 1 5
+2 2 1 3 7
+3 3 9 4 9 5 9
+1 1 0
+ */
+
+    console.log("@#")
+}
+module.exports.mcmf = mcmf
 module.exports.util = util
 module.exports.makeClusterList = makeClusterList
 module.exports.selectingDrones = selectingDrones

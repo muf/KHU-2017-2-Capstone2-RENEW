@@ -187,6 +187,15 @@ function runAlgorithm(result, callback){
 }
 function controlDrones(result, callback){
     console.log("controll Drones")
+    console.log(service)
+    // 드론 3대.. 이동해야하는 위치도 3군데.. 가장 가까운 드론을 우선 배치하는게 맞음.
+    // 즉 n개 자리. n개 드론. n!... 아놔 이건 어떡하지 ㅋㅋㅋ 모르는척 할까.. mcmf로 해결 가능 나중에 임베딩해서 쓰자. 일단 패스
+    // result = logic.mcmf(result.drones.slice(0,3), service.drone.list)
+    for(var i = 0; i < service.drone.list; i++){
+        var drone = result.drones[i]
+        var position = drone.position
+        // 해당 위치로 드론 병령 전송 parrarell 방식으로 진행 후 확인. 문제 발생 시 ... 몰름 ㅎㅎ
+    }
     callback(null, result)
 }
 function writeResult(callback){
@@ -205,9 +214,6 @@ function writeResult(callback){
             callback(null, response.body)
         }
     )
-}
-function droneControl(){
-
 }
 function exitProcess(){
     // db 등 정리 
