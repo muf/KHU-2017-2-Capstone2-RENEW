@@ -1,11 +1,12 @@
 
 var request = require('request')
 var async = require('async')
-var request = require('request')
+
 
 
 
 var logic = require(__dirname+'/logic.js')
+var drone = require(__dirname+'/drone.js')
 
 // @ load models & methods
 var interrupt = {kill:false, pause:true}
@@ -20,13 +21,13 @@ function main(count){
     // 매 주기 마다 상태를 체크한다.
     // 
     console.log("main start")
-    readyForTask()
+    readyForTask() //@@ test task 준비 ㄴ
     async.whilst(
         function () { 
             // 매 초 확인. kill이 들어오면 즉시 종료
             count++
             // close test용 함수
-            if(count > 10){
+            if(count > 1000000){
                 //interrupt.kill
                 interrupt.kill= true
             }
@@ -36,9 +37,8 @@ function main(count){
             // 특정 주기를 기준으로 돌려야 한다.
             // mainTask 도중에는 변경하면 안된다.
             if(!mutex.lock && !interrupt.pause){
-
                 var nextSeq = getCycleSeqence()
-                nextSeq = seq +1;//test@@@
+                nextSeq = seq +1;//test@@@ 만료된 서비스 강제 연명..
                 if(nextSeq < 0) {
                     errList.push("시간이 이미 만료된 서비스")
                     interrupt.kill = true
@@ -47,7 +47,7 @@ function main(count){
                 if(nextSeq > seq ){
                     console.log(`seq : ${seq} -> ${nextSeq}`)
                     seq = nextSeq // 더 큰 seq라면 업데이트
-                    taskTick = true // task 준비 완료 신호
+                    taskTick = true // task 준비 완료 신호 //test@@@ 테스크는 진행하지 않는다.
                 } 
                 
             }
@@ -140,7 +140,7 @@ function mainTask(callback){
             },
             makeClusterData,
             runAlgorithm,
-            // controlDrones,
+            controlDrones,
             function(result, callback){
 
                 callback(null, result)
@@ -205,20 +205,18 @@ function objToStrMap(obj) {
 }
 function controlDrones(result, callback){
     console.log("controll Drones")
-    console.log(service)
     // 드론 3대.. 이동해야하는 위치도 3군데.. 가장 가까운 드론을 우선 배치하는게 맞음.
     // 즉 n개 자리. n개 드론. n!... 아놔 이건 어떡하지 ㅋㅋㅋ 모르는척 할까.. mcmf로 해결 가능 나중에 임베딩해서 쓰자. 일단 패스
     // result = logic.mcmf(result.drones.slice(0,3), service.drone.list)
     var i = 0;
-    tasks = [];
+    var tasks = [];
     async.waterfall([
         function(callback){
-            var tasks;
             async.whilst(
                 function () { 
                     // 매 초 확인. kill이 들어오면 즉시 종료
                     console.log("@@@ i : " + i)
-                    i++
+                    return i < service.drone.list.length
                 },function(callback){
                     var drone = result.drones[i]
                     var position = drone.position
@@ -227,16 +225,21 @@ function controlDrones(result, callback){
                             callback(null, "ok: " + i)
                          }, 1000); 
                     })
+                    i++
+                    callback(null)
+                    // setTimeout(function(){callback(null)},1000)
                 },function(err){
                     callback(null)
             })
         },
-        function(result, callback){
-            async.waterfall(tasks, function (err, result) {
+        function(err, result){
+            async.parallel(tasks, function (err, result) {
+                console.log("A")
                 callback(null, result)
             });
         }
     ],function (err, result) {
+        console.log("B")
         callback(null, result)
       });
 }

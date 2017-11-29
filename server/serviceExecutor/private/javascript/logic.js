@@ -159,8 +159,6 @@ function groupNodes1(drones, cluster, threshold = 10, nodeCoverage = 10, apCover
     var apCoverageSize = Math.floor(apCoverage / gridSize) // 드론 커버리지 grid 칸 수
     var centerPoint = getGridPos(gridArray,gridArray.centroid.lat, gridArray.centroid.lng)
 
-        // 2사분면
-        console.log("전체 커버")
     for(var exi = 0; exi <  gridArray.x; exi++){
         for(var exj = 0; exj < gridArray.y; exj++){  
 
@@ -187,8 +185,7 @@ function groupNodes1(drones, cluster, threshold = 10, nodeCoverage = 10, apCover
             coreProcess(drones, cluster, bufferQueue, threshold, nodeCoverage)
         }
     }
-    printGrid(gridArray)
-    console.log("test")
+    // printGrid(gridArray)
 
     
 }
@@ -209,7 +206,6 @@ function groupNodes2(drones, cluster, boundary = true, threshold = 10, nodeCover
     var centerPoint = getGridPos(gridArray,gridArray.centroid.lat, gridArray.centroid.lng)
 
      // 2사분면
-     console.log("2사분면")
     for(var exi = 0; exi <  centerPoint.x; exi++){
         for(var exj = 0; exj < centerPoint.y; exj++){  
 
@@ -243,7 +239,6 @@ function groupNodes2(drones, cluster, boundary = true, threshold = 10, nodeCover
     }
     printGrid(gridArray)
     // 1사분면
-     console.log("1사분면")
     for(var exi = 0; exi <  centerPoint.x; exi++){
         for(var exj = gridArray.y-1; exj > centerPoint.y; exj--){  
 
@@ -277,7 +272,6 @@ function groupNodes2(drones, cluster, boundary = true, threshold = 10, nodeCover
     }
     printGrid(gridArray)
     // 4사분면
-     console.log("4사분면")
     for(var exi = gridArray.x-1; exi >  centerPoint.x; exi--){
         for(var exj = gridArray.y-1; exj > centerPoint.y; exj--){  
 
@@ -311,7 +305,6 @@ function groupNodes2(drones, cluster, boundary = true, threshold = 10, nodeCover
     }
     printGrid(gridArray)
     // 3사분면
-     console.log("3사분면")
     for(var exi = gridArray.x-1; exi >  centerPoint.x; exi--){
         for(var exj = 0; exj < centerPoint.y; exj++){  
 
@@ -344,7 +337,6 @@ function groupNodes2(drones, cluster, boundary = true, threshold = 10, nodeCover
         }
     }
     printGrid(gridArray)
-    console.log("test")
 
     
 }
@@ -385,11 +377,9 @@ function coreProcess(drones, cluster, bufferQueue, threshold, nodeCoverage){
     }
 }
 function getNodeDensity(clusters, drone){
-    console.log("gri")
-    printGrid(clusters.clusters.get(0).gridArray)
-    console.log("buf")
-    printGrid(clusters.clusters.get(0).bufferGridArray)
-    console.log("#")
+    // printGrid(clusters.clusters.get(0).gridArray)
+    // printGrid(clusters.clusters.get(0).bufferGridArray)
+    return 1
 }
 function selectingDrones(rawList){
     var drones = rawList.drones
@@ -470,7 +460,6 @@ function mcmf(jobs, drones){
 1 1 0
  */
 
-    console.log("@#")
 }
 module.exports.mcmf = mcmf
 module.exports.util = util
