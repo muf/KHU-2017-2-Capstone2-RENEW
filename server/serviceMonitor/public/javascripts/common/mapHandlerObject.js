@@ -16,6 +16,7 @@ var mapHandlerObject = function(){
   this.map.wrappers = {}
 
   this.addMarker = function(markers, lat,long,_list,label,i,type='default'){
+    var hexMax = 16777215
     marker_icon_list = []
     marker_icon_list.push('../../icon/01.png')
     marker_icon_list.push('../../icon/02.png')
@@ -25,26 +26,29 @@ var mapHandlerObject = function(){
     marker_icon_list.push('../../icon/06.png')
     var marker_icon
     if(type =='default'){
-      marker_icon = marker_icon_list[5]
+      var color = "#"+ Number((123456789 + 123456789*i) % hexMax).toString(16)
+      marker_icon = {
+        //http://jsfiddle.net/upsidown/eLcNq/
+          // path: "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0",
+          path: 'M8 2.1c1.1 0 2.2 0.5 3 1.3 0.8 0.9 1.3 1.9 1.3 3.1s-0.5 2.5-1.3 3.3l-3 3.1-3-3.1c-0.8-0.8-1.3-2-1.3-3.3 0-1.2 0.4-2.2 1.3-3.1 0.8-0.8 1.9-1.3 3-1.3z',
+          fillColor: color,
+          fillOpacity: .99,
+          strokeWeight: 0,
+          scale:3,
+          labelOrigin: new google.maps.Point(8,8)
+      }
     }
     else if(type == 'drone'){
-      marker_icon = '../../icon/drone.png'
+      marker_icon = {
+        url: '../../icon/drone.png',
+        //This marker is 20 pixels wide by 32 pixels high.
+        scaledSize: new google.maps.Size(32, 32)
+      };
     }
-    var image = {
-      // url:marker_icon,
-      // This marker is 20 pixels wide by 32 pixels high.
-      scaledSize: new google.maps.Size(20, 32),
-      // The origin for this image is (0, 0).
-      origin: new google.maps.Point(0, 0),
-      // The anchor for this image is the base of the flagpole at (0, 32).
-      anchor: new google.maps.Point(0, 32),
-      fillColor: '#4286f4'
-    };
-
     var marker = new google.maps.Marker({
       position: new google.maps.LatLng(lat,long),
       label:""+label,
-      icon : image,
+      icon : marker_icon,
       node : _list
     })
 
@@ -55,7 +59,6 @@ var mapHandlerObject = function(){
     
     markers.push(marker)
     this.showMapElement(marker)
-    console.log(marker)
     return marker
   }
   this.showMapElement = function(element){

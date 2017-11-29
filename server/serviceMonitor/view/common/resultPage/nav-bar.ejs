@@ -13,7 +13,15 @@
             <ul class="nav navbar-nav">
                 <!-- Hidden li included to remove active class from about link when scrolled up past about section -->
                 <li class="nav-menu-li">
-                    <a class="nav-menu" href="/"> none</a>
+                    <a class="nav-menu" onclick = "app.map.wrappers.droneMarkerWrapper.toggle()"> 드론 위치 </a>
+                </li>
+                <!-- Hidden li included to remove active class from about link when scrolled up past about section -->
+                <li class="nav-menu-li">
+                    <a class="nav-menu" onclick = "app.map.wrappers.clusterMarkerWrapper.toggle()"> 클러스터 결과 </a>
+                </li>
+                <!-- Hidden li included to remove active class from about link when scrolled up past about section -->
+                <li class="nav-menu-li">
+                    <a class="nav-menu"  onclick = "app.map.wrappers.droneClusterMarkerWrapper.toggle()"> 서비스 노드 </a>
                 </li>
             </ul>
         </div> <!-- nav bar menu -->

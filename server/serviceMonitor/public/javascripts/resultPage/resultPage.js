@@ -34,6 +34,7 @@ function initRegisterPage(){
                     }
                     else{
                         dataList = result
+                        // dataList.forEach(x=> x.clusters = objToStrMap(x.clusters))
                     }             
                     addTableEvents() 
                 },
@@ -109,20 +110,31 @@ function addTableEvents(){
         app.map.wrappers.droneClusterMarkerWrapper.clearAll()
         app.map.wrappers.clusterMarkerWrapper.clearAll()
 
-        // dataList[index].forEach( x => {
-        //     app.map.wrappers.droneMarkerWrapper.addMarker(x)
-        //     app.map.wrappers.clusterMarkerWrapper.addMarker(x)
-        //     app.map.wrappers.droneClusterMarkerWrapper.addMarker(x)
-        // })
+        
+        for(i in dataList[index].clusters){
+            cluster = dataList[index].clusters[i]
+            cluster.forEach(node=>{
+                app.map.wrappers.clusterMarkerWrapper.addMarker(node)
+            })
+        }
+
+        var drones = dataList[index].drones
+        for(var i = 0; i <service.drone.list.length; i++){
+            var drone = drones[i]
+            app.map.wrappers.droneMarkerWrapper.addMarker(drone)
+        }
         dataList[index].drones.forEach(drone=>{
             drone.nodes.forEach(node=>{
                 app.map.wrappers.droneClusterMarkerWrapper.addMarker(node)
             })
         })
 
-        dataList[index].drones.forEach(drone=>{
-            app.map.wrappers.droneMarkerWrapper.addMarker(drone)
-        })
-
       })
   }
+  function objToStrMap(obj) {
+    let strMap = new Map();
+    for (let k of Object.keys(obj)) {
+        strMap.set(k, obj[k]);
+    }
+    return strMap;
+}

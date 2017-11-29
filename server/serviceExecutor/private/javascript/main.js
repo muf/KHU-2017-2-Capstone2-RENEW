@@ -16,9 +16,6 @@ var service; //lazy인듯
 var seq = -1;
 var errList= []
 var outputFileData = [];
-function test(clusters){
-    console.log(clusters)
-}
 function main(count){
     // 매 주기 마다 상태를 체크한다.
     // 
@@ -175,15 +172,36 @@ function makeClusterData(result, callback){
 function runAlgorithm(result, callback){
     console.log("run algorithm")
     result = logic.makeClusterList(result)
-    test(result)
     result = logic.makeGrids(result)
     result = logic.makeGroups(result)
     result = logic.selectingDrones(result)
 
     // 결과 만들어서 push push 
     var outputData = result
+    outputData.clusters = strMapToObj(outputData.clusters)
     outputFileData.push(outputData)
+    // outputFileData.forEach(x=>{x.clusters = strMapToObj(x.clusters)})
+    // var input = JSON.stringify(JSON.stringify(outputFileData))
+
+    // var output  = JSON.parse(JSON.parse(input))
+    // output.forEach(x=>{x.clusters = objToStrMap(x.clusters)})
     callback(null, result)
+}
+function strMapToObj(strMap) {
+    let obj = Object.create(null);
+    for (let [k,v] of strMap) {
+        // We don’t escape the key '__proto__'
+        // which can cause problems on older engines
+        obj[k] = v;
+    }
+    return obj;
+}
+function objToStrMap(obj) {
+    let strMap = new Map();
+    for (let k of Object.keys(obj)) {
+        strMap.set(k, obj[k]);
+    }
+    return strMap;
 }
 function controlDrones(result, callback){
     console.log("controll Drones")
