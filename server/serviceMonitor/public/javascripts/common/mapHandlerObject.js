@@ -22,21 +22,23 @@ var mapHandlerObject = function(){
     marker_icon_list.push('../../icon/03.png')
     marker_icon_list.push('../../icon/04.png')
     marker_icon_list.push('../../icon/05.png')
+    marker_icon_list.push('../../icon/06.png')
     var marker_icon
     if(type =='default'){
-      marker_icon = marker_icon_list[i]
+      marker_icon = marker_icon_list[5]
     }
     else if(type == 'drone'){
       marker_icon = '../../icon/drone.png'
     }
     var image = {
-      url:marker_icon,
+      // url:marker_icon,
       // This marker is 20 pixels wide by 32 pixels high.
-      scaledSize: new google.maps.Size(30, 32),
+      scaledSize: new google.maps.Size(20, 32),
       // The origin for this image is (0, 0).
       origin: new google.maps.Point(0, 0),
       // The anchor for this image is the base of the flagpole at (0, 32).
-      anchor: new google.maps.Point(0, 32)
+      anchor: new google.maps.Point(0, 32),
+      fillColor: '#4286f4'
     };
 
     var marker = new google.maps.Marker({

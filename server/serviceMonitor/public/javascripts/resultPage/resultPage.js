@@ -114,11 +114,11 @@ function addTableEvents(){
         //     app.map.wrappers.clusterMarkerWrapper.addMarker(x)
         //     app.map.wrappers.droneClusterMarkerWrapper.addMarker(x)
         // })
-        // dataList[index].drones.forEach(drone=>{
-        //     drone.nodes.forEach(node=>{
-        //         app.map.wrappers.droneClusterMarkerWrapper.addMarker(node)
-        //     })
-        // })
+        dataList[index].drones.forEach(drone=>{
+            drone.nodes.forEach(node=>{
+                app.map.wrappers.droneClusterMarkerWrapper.addMarker(node)
+            })
+        })
 
         dataList[index].drones.forEach(drone=>{
             app.map.wrappers.droneMarkerWrapper.addMarker(drone)
