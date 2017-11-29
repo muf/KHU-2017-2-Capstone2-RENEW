@@ -41,7 +41,9 @@ var mapEventWrapper = function(_mapHandler){
 
        var lat = event.latLng.lat()
        var lng = event.latLng.lng()
-       this.wrappers.inputMarkerWrapper.addMarker(lat,lng)
+       if(this.wrappers.inputMarkerWrapper!=undefined){
+            this.wrappers.inputMarkerWrapper.addMarker(lat,lng)
+        }
     }); // dblclick  
 
 

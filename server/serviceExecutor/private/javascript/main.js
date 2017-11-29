@@ -29,7 +29,7 @@ function main(count){
             // 매 초 확인. kill이 들어오면 즉시 종료
             count++
             // close test용 함수
-            if(count > 50){
+            if(count > 10){
                 //interrupt.kill
                 interrupt.kill= true
             }
@@ -143,7 +143,7 @@ function mainTask(callback){
             },
             makeClusterData,
             runAlgorithm,
-            controlDrones,
+            // controlDrones,
             function(result, callback){
 
                 callback(null, result)
@@ -193,9 +193,6 @@ function controlDrones(result, callback){
     // result = logic.mcmf(result.drones.slice(0,3), service.drone.list)
     var i = 0;
     tasks = [];
-   
-
-
     async.waterfall([
         function(callback){
             var tasks;
@@ -224,7 +221,6 @@ function controlDrones(result, callback){
     ],function (err, result) {
         callback(null, result)
       });
-
 }
 function writeResult(callback){
     //outputFileData
@@ -251,17 +247,16 @@ function exitProcess(){
         if(err) console.log(err)
         errList.forEach(function(err){console.log("App Err: " + err)})
         console.log("bye...")
-
-        // request({
-        //     url : "http://localhost:3002/updateServiceApplicationState",
-        //     method:"POST",
-        //     json:true,
-        //     body:{state:"finished", serviceId: service._id},
-        //     },function (err, response, body) {
-        //         if (err) console.log(err)
-        //         process.exit()
-        //     }
-        // )
+        request({
+            url : "http://localhost:3002/updateServiceApplicationState",
+            method:"POST",
+            json:true,
+            body:{state:"finished", serviceId: service._id},
+            },function (err, response, body) {
+                if (err) console.log(err)
+                process.exit()
+            }
+        )
     })
 }
 function getCycleSeqence(){

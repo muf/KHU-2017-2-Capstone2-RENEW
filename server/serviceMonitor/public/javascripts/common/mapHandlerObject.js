@@ -15,16 +15,22 @@ var mapHandlerObject = function(){
 
   this.map.wrappers = {}
 
-  this.addMarker = function(markers, lat,long,_list,label,i){
+  this.addMarker = function(markers, lat,long,_list,label,i,type='default'){
     marker_icon_list = []
     marker_icon_list.push('../../icon/01.png')
     marker_icon_list.push('../../icon/02.png')
     marker_icon_list.push('../../icon/03.png')
     marker_icon_list.push('../../icon/04.png')
     marker_icon_list.push('../../icon/05.png')
-  
-     var image = {
-      url:marker_icon_list[i],
+    var marker_icon
+    if(type =='default'){
+      marker_icon = marker_icon_list[i]
+    }
+    else if(type == 'drone'){
+      marker_icon = '../../icon/drone.png'
+    }
+    var image = {
+      url:marker_icon,
       // This marker is 20 pixels wide by 32 pixels high.
       scaledSize: new google.maps.Size(30, 32),
       // The origin for this image is (0, 0).
@@ -38,7 +44,6 @@ var mapHandlerObject = function(){
       label:""+label,
       icon : image,
       node : _list
-      
     })
 
     google.maps.event.addListener(marker, "click", function(event) {

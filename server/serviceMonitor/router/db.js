@@ -274,7 +274,7 @@ router.post('/saveInputBlob', cors(), function(req, res) {
     var input = JSON.stringify(req.body.input)
     var serviceId = req.body.serviceId
     var inputPath = '/Users/junghyun.park/Desktop/git/KHU-2017-2-Capstone2-RENEW/blob/input/'
-    var fileName = new Date().getTime()+'.input'
+    var fileName = new Date().getTime()
     req.body.fileName = fileName
     fs.writeFile(inputPath + fileName, input, function(err) {
         if(err) {

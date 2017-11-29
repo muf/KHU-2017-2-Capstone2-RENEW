@@ -424,7 +424,7 @@ function printGrid(gridArray){
       stringStream += "\n"
     }
     stringStream += "total nodes : "+total;
-    console.log(stringStream)
+    //console.log(stringStream)
 }
 
 

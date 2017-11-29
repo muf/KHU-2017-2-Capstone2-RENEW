@@ -25,7 +25,7 @@ function initRegisterPage(){
                 type: "POST",
                 data : {
                     // @@
-                    path: service.blob.inputBasePath+service.blob.fileName
+                    path: service.blob.outputBasePath+service.blob.fileName
                 },
                 success: function(result, textStatus, jqXHR)
                 {
@@ -48,7 +48,7 @@ function initRegisterPage(){
             alert("Internal Error")     
         }
     })
-    app = new outputMarkerWrapper(new mapEventWrapper(baseMapHandler))
+    app = new droneClusterMarkerWrapper(new clusterMarkerWrapper(new droneMarkerWrapper(new mapEventWrapper(baseMapHandler))))
 
 }
 function applyInputData(){
@@ -105,9 +105,24 @@ function addTableEvents(){
     $('#side-table-container tbody tr').click(function(event){
         var tr = event.currentTarget
         var index = tr.getElementsByTagName('td')[0].innerHTML
-        app.map.wrappers.outputMarkerWrapper.clearAll()
-        dataList[index].forEach( x => {
-            app.map.wrappers.outputMarkerWrapper.addMarker(x)
+        app.map.wrappers.droneMarkerWrapper.clearAll()
+        app.map.wrappers.droneClusterMarkerWrapper.clearAll()
+        app.map.wrappers.clusterMarkerWrapper.clearAll()
+
+        // dataList[index].forEach( x => {
+        //     app.map.wrappers.droneMarkerWrapper.addMarker(x)
+        //     app.map.wrappers.clusterMarkerWrapper.addMarker(x)
+        //     app.map.wrappers.droneClusterMarkerWrapper.addMarker(x)
+        // })
+        // dataList[index].drones.forEach(drone=>{
+        //     drone.nodes.forEach(node=>{
+        //         app.map.wrappers.droneClusterMarkerWrapper.addMarker(node)
+        //     })
+        // })
+
+        dataList[index].drones.forEach(drone=>{
+            app.map.wrappers.droneMarkerWrapper.addMarker(drone)
         })
+
       })
   }

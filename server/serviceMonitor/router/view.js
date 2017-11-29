@@ -21,7 +21,7 @@ router.get('/submitServicePage',function(req, res, next) {
 });
 
 router.get('/finishedPage',function(req, res, next) {
-    dao.getServicesByState(req, res,['finished'], function(err, res, services){
+    dao.getServicesByState(req, res,['finished','execute'], function(err, res, services){
         if (err) return res.status(500).send("get services by state FAIL");
         res.render(dir.get('view') + '/finishedPage.ejs',{submitList: services});
     })
@@ -61,7 +61,7 @@ router.get('/resultPage?:serviceId',function(req, res, next) {
             })
         },
         function(result, callback){
-            req.body.path = result.blob.inputBasePath + result.blob.fileName // @@@ 임시로 inputBasePath로 설정
+            req.body.path = result.blob.outputBasePath + result.blob.fileName // @@@ 임시로 inputBasePath로 설정
             req.body.service = result
             request({
                 url:'http://localhost:3002/getBlobData',
