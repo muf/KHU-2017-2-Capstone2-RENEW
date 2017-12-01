@@ -2,6 +2,7 @@ var express = require('express')
 var router = express.Router()
 var app = express();
 var async = require('async');
+var request = require('request')
 
 var dir = new Map();
 dir.set('view', __dirname +"/../view/")
@@ -9,11 +10,35 @@ dir.set('private', __dirname +"/../private/")
 
 var bash = require(dir.get('private') + 'javascript/common/bash.js')
 var count = 0
+router.post('/termService',function(req, res, next){
+  var pid = req.body.pid
+  var serviceId = req.body.serviceId
 
+  bash.termService(req,function(result){
+    console.log(result.msg)
+    if(result.err){
+      return res.status(500).send("fail")
+    }
+    else{
+      request({
+        url : "http://localhost:3002/updateServiceApplicationState",
+        method:"POST",
+        json:true,
+        body:{state:"submit", serviceId: result.req.body.serviceId},
+        },function (err, response, body) {
+            if (err){
+              console.log(err)
+              return res.status(500).send("fail")
+            }
+            res.json({msg: result.msg})
+        })
+    }
+  })
+})
 // @ handle bash requests
 router.post('/newServiceRequest',function(req, res, next) {
   var serviceId = req.body._id
-  console.log(serviceId)
+  // console.log(serviceId)
   // executor 실행
   async.waterfall([
     function(callback) {

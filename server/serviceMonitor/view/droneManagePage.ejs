@@ -51,6 +51,7 @@
                 <td><%= droneList[i].mac %></td>
                 <td><%= droneList[i].gps.lat %></td>
                 <td><%= droneList[i].gps.lng %></td>
+                <td><button type="button" id="remove-drone" class="btn btn-info"> remove </button></td>
               </tr>
             <% } %>
           </tbody>
@@ -70,44 +71,11 @@
         <table class="table table-fixed">
           <thead>  
             <tr>
-              <th style="display:none;" >드론 아이디</th>
-              <th>주소</th>
-              <th>포트</th>
-              <th>모델명</th>
-              <th>상태</th> 
               <th>mac</th> 
             </tr>
           </thead>
           <tbody>
               <tr>
-                <td>
-                  <form>
-                      <div class="form-group">
-                        <input type="text" class="form-control" id="drone-ip">
-                      </div>
-                    </form>
-                </td>
-                <td>
-                  <form>
-                      <div class="form-group">
-                        <input type="text" class="form-control" id="drone-port">
-                      </div>
-                    </form>
-                </td>
-                <td>
-                  <form>
-                      <div class="form-group">
-                        <input type="text" class="form-control" id="drone-model">
-                      </div>
-                    </form>
-                </td>
-                <td>
-                  <form>
-                      <div class="form-group">
-                        <input type="text" class="form-control" id="drone-state">
-                      </div>
-                    </form>
-                </td>
                 <td>
                   <form>
                       <div class="form-group">

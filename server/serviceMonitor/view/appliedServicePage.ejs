@@ -34,11 +34,7 @@
               <th>서비스 신청 시점</th>
               <th>서비스 시작 시점</th>
               <th>서비스 종료 시점</th>
-              <th>최소 드론 수</th>
-              <th>최대 드론 수</th>
-              <th>현재 드론 수</th>
-              <th>서버 주소</th>
-              <th>서버 포트</th>
+              <th>드론수</th>
               <th>이메일</th>
               <th>전화번호</th>
               <th>상태</th>
@@ -52,11 +48,7 @@
                 <td class="table-data"><%= appliedList[i].loggingDate %></td>
                 <td class="table-data"><%= appliedList[i].serviceStartDate %></td>
                 <td class="table-data"><%= appliedList[i].serviceEndDate %></td>
-                <td><%= appliedList[i].drone.min %></td>
-                <td><%= appliedList[i].drone.max %></td>
-                <td><%= appliedList[i].drone.max %></td>
-                <td><%= appliedList[i].server.ip %></td>
-                <td><%= appliedList[i].server.port %></td>
+                <td><%= appliedList[i].drone.num %></td>
                 <td><%= appliedList[i].contact.email %></td>
                 <td><%= appliedList[i].contact.number %></td>
                 <td><%= appliedList[i].state %></td>

@@ -19,6 +19,7 @@ module.exports = function(conf) {
             var db_router = require('./router/db')
             var bash_router = require('./router/bash')
             var view_router = require('./router/view')
+            var drone_router = require('./router/drone')
             // make instances
             var app = express()
 
@@ -37,14 +38,13 @@ module.exports = function(conf) {
             app.use('/', db_router) 
             app.use('/', bash_router)
             app.use('/', view_router)
+            app.use('/', drone_router)
             
             // use error check
             app.use(function(err, req, res, next) {
                 console.log("ERROR : APP.JS");
                 console.log("MSG: "+err);
             })
-            // connect sub apps
-
             // listen application
             app.listen(conf.server.port, function(){
                 console.log("Application [ %s ] is Running on %s port", conf.server.name, conf.server.port);

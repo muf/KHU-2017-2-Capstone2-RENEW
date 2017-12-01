@@ -1,4 +1,5 @@
-
+var async = require('async')
+var request = require('request')
 var util = {
     realLatMeter : function(meter){
         return meter * 0.000008996
@@ -125,14 +126,20 @@ function makeGrid(cluster){
     gridArray.centroid.lng /= cluster.length
 
     cluster.gridArray = gridArray
-    cluster.bufferGridArray = Object.assign({}, gridArray)
+    copyList = gridArray.map(row=>{return row.map(elem=>{return elem.map(node=>{return node})})})
+    for(item in gridArray){
+        if(isNaN(Number(item))){
+            copyList[item] = gridArray[item]
+        }
+    }
+    cluster.bufferGridArray = copyList
 }
 function makeGroups(rawList){
     // 각 클러스터끼리 우선 grouping..
     rawList.drones = []
     rawList.clusters.forEach(x=>makeGroup(x,rawList),rawList)
-    var gridArray = rawList.clusters.get(0).gridArray;
-    printGrid(gridArray)
+    // var gridArray = rawList.clusters.get(0).gridArray;
+    // printGrid(gridArray)
     return rawList
 }
 function addDrone(drones){
@@ -339,7 +346,7 @@ function groupNodes2(drones, cluster, boundary = true, threshold = 10, nodeCover
     printGrid(gridArray)
 
     
-}
+}``
 function coreProcess(drones, cluster, bufferQueue, threshold, nodeCoverage){
     var gridArray = cluster.gridArray
     while(bufferQueue.length >= threshold){
@@ -377,22 +384,52 @@ function coreProcess(drones, cluster, bufferQueue, threshold, nodeCoverage){
     }
 }
 function getNodeDensity(clusters, drone){
-    // printGrid(clusters.clusters.get(0).gridArray)
-    // printGrid(clusters.clusters.get(0).bufferGridArray)
-    return 1
+    var count = 0;
+    var dist = 0;
+    clusters.clusters.forEach(cluster=>{
+        pos = getGridPos(cluster.bufferGridArray, drone.position.lat, drone.position.lng)
+        var apCoverage = 100
+        var meter = cluster.bufferGridArray.meter
+        var xTimes = cluster.bufferGridArray.xTimes
+        apCoverage =  apCoverage * meter * xTimes // 100미터
+        var apCoverageSize = Math.floor(apCoverage / cluster.bufferGridArray.gridSize) // 드론 커버리지 grid 칸 수
+
+        for(x = pos.x - apCoverageSize/2; x < pos.x + apCoverageSize/2; x ++){
+            for(y = pos.y - apCoverageSize/2; y < pos.y + apCoverageSize/2; y++){
+                if(cluster.bufferGridArray[x] == undefined || cluster.bufferGridArray[x][y] == undefined){}
+                else{
+                    count += cluster.bufferGridArray[x][y].length
+                    cluster.bufferGridArray[x][y].forEach(node=>{
+                        dist += util.distanceTo(node.lat,node.lng, drone.position.lat,drone.position.lng)
+                    })
+                }
+            }
+        }
+    })
+    dist = dist / count
+    return {count,dist}
 }
-function selectingDrones(rawList){
+function selectingDrones(rawList,callback){
     var drones = rawList.drones
     //TEST@@
-    drones.forEach(x=>{x.weight = Math.random()*100})
+    // drones.forEach(x=>{x.weight = Math.random()*100})
     drones.forEach(x=>{
-        var assignedNodeWeight = x.nodes.length * 100
-        var nodeDensityWeight = getNodeDensity(rawList, x) * 100
-        x.weight = assignedNodeWeight + nodeDensityWeight // 0 ~ 100 arctan 그래프 활용하자.
+        var assignedNodeWeight = Number(x.nodes.length) * 10000 * 0.8
+        var nodeDensityCountWeight = Number(getNodeDensity(rawList, x).count)  * 100 * 0.2 * 0.5
+        var nodeDensityDistWeight = (100 - Number(getNodeDensity(rawList, x).dist)) * 0.2 * 0.5
+        // console.log("assigneodeWeight:"+assignedNodeWeight)
+        // console.log("nodeDensityWeight:"+nodeDensityCountWeight)
+        // console.log("nodeDensityWeight:"+nodeDensityDistWeight)ㅇ
+        x.weight = Number(assignedNodeWeight + nodeDensityCountWeight + nodeDensityDistWeight)// 0 ~ 100 arctan 그래프 활용하자.
     })
+    // ㅋㅋㅋㅋㅋㅋㅋ sort가 비동기였네 
+    async.sortBy(drones, function(x, callback) {
+        callback(null, x.weight);
+    }, function(err,result) {
+        // return rawList
+        callback(rawList)
+    });
     
-    drones.sort((x,y)=>{return x.weight > y.weight})
-    return rawList
 }
 function printGrid(gridArray){
     var centroid = getGridPos(gridArray,gridArray.centroid.lat, gridArray.centroid.lng)
@@ -414,10 +451,8 @@ function printGrid(gridArray){
       stringStream += "\n"
     }
     stringStream += "total nodes : "+total;
-    //console.log(stringStream)
+    // console.log(stringStream)
 }
-
-
 
 function initArray(len, val){
     var list = new Array(len)

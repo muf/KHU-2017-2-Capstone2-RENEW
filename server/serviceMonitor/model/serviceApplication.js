@@ -22,7 +22,8 @@ var serviceApplicationSchema = new mongoose.Schema({
     drone:{
         num : { type: Number, default: 0 },
         list : [{
-            id: String
+            id: String,
+            mac: String
         }]
     },
     contact:{
@@ -32,7 +33,6 @@ var serviceApplicationSchema = new mongoose.Schema({
     state: { type: String, default: 'applied' }, // 'submit / finished / denied / applied / execute'
     server: { // executor server
         pid: {type: Number, default: -1 },
-        ip: { type: String, default: '0.0.0.0' },
         port: { type: Number, default: -1 }
     }
 });

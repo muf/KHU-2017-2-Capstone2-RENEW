@@ -3,11 +3,12 @@ var request = require('request')
 var async = require('async')
 
 
-
-
+var testMode = true
 var logic = require(__dirname+'/logic.js')
 var drone = require(__dirname+'/drone.js')
 
+var serverURI = "http://14.33.77.250"
+var serviceMonitorPort=":3002"
 // @ load models & methods
 var interrupt = {kill:false, pause:true}
 var mutex = {lock:false, timer:null}
@@ -17,17 +18,27 @@ var service; //lazy인듯
 var seq = -1;
 var errList= []
 var outputFileData = [];
+var updateFlag = true
+function update(flag){
+    updateFlag = flag
+}
+function getUpdate(){
+    temp = updateFlag
+    return temp
+}
 function main(count){
     // 매 주기 마다 상태를 체크한다.
     // 
     console.log("main start")
-    readyForTask() //@@ test task 준비 ㄴ
+    readyForTask() //@@ test task 준비
     async.whilst(
         function () { 
             // 매 초 확인. kill이 들어오면 즉시 종료
             count++
+            // console.log(`count: ${count}`)
+    // console.log("update:" + updateFlag)
             // close test용 함수
-            if(count > 1000000){
+            if(count > 500000){
                 //interrupt.kill
                 interrupt.kill= true
             }
@@ -38,12 +49,10 @@ function main(count){
             // mainTask 도중에는 변경하면 안된다.
             if(!mutex.lock && !interrupt.pause){
                 var nextSeq = getCycleSeqence()
-                nextSeq = seq +1;//test@@@ 만료된 서비스 강제 연명..
                 if(nextSeq < 0) {
-                    errList.push("시간이 이미 만료된 서비스")
-                    interrupt.kill = true
+                    errList.push("시간이 맞지 않습니다.")
+                    // interrupt.kill = true  // for test
                 }
-                
                 if(nextSeq > seq ){
                     console.log(`seq : ${seq} -> ${nextSeq}`)
                     seq = nextSeq // 더 큰 seq라면 업데이트
@@ -54,7 +63,6 @@ function main(count){
             return true
         },
         function (callback) {
-            count++;
             if(errCount > 3){
                 callback(err = {message: "mainTask가 정상적인 시간내에 종료되지 않음."})
             }
@@ -109,7 +117,7 @@ function getServiceData(callback){
 }
 // 데이터 읽어와서 변수에 저장
 function getInputData(result, callback){ 
-    console.log(service)
+    // console.log(service)
     request({
         url : "http://localhost:3002/getBlobData",
         method:"POST",
@@ -133,7 +141,7 @@ function mainTask(callback){
     if(mutex.lock == false){
         errCount = 0 // 에러 카운트 초기화
         mutex.lock = true
-        console.log("func start@@@@@@@@@@@@@@@@@@@@@@@@@@2")
+        console.log("-----------------------------  START -----------------------------")
         async.waterfall([
             function(callback){
                 callback(null, "none")
@@ -147,7 +155,8 @@ function mainTask(callback){
             }
           ], function (err, result) {
             mutex.lock = false
-            console.log("func finished.##################")
+            updateFlag = true
+            console.log("-----------------------------   END   ----------------------------")
           });
     }
     else{
@@ -163,7 +172,6 @@ function makeClusterData(result, callback){
         body:{path:service.blob.inputBasePath + service.blob.fileName, seq: seq},
         },function (err, response, body) {
             if (err) callback(err, true)
-            // console.log(response.body)
             callback(null, response.body)
         }
     )
@@ -174,18 +182,23 @@ function runAlgorithm(result, callback){
     result = logic.makeClusterList(result)
     result = logic.makeGrids(result)
     result = logic.makeGroups(result)
-    result = logic.selectingDrones(result)
+    logic.selectingDrones(result,function(rawList){
 
-    // 결과 만들어서 push push 
-    var outputData = result
-    outputData.clusters = strMapToObj(outputData.clusters)
-    outputFileData.push(outputData)
-    // outputFileData.forEach(x=>{x.clusters = strMapToObj(x.clusters)})
-    // var input = JSON.stringify(JSON.stringify(outputFileData))
+        var outputData = rawList
+        outputData.clusters = strMapToObj(outputData.clusters)
+        outputFileData.push(outputData)
+        callback(null, rawList)
+    })
 
-    // var output  = JSON.parse(JSON.parse(input))
-    // output.forEach(x=>{x.clusters = objToStrMap(x.clusters)})
-    callback(null, result)
+    // // 결과 만들어서 push push 
+    // var outputData = result
+    // outputData.clusters = strMapToObj(outputData.clusters)
+    // outputFileData.push(outputData)
+    // // outputFileData.forEach(x=>{x.clusters = strMapToObj(x.clusters)})
+    // // var input = JSON.stringify(JSON.stringify(outputFileData))
+
+    // // var output  = JSON.parse(JSON.parse(input))
+    // // output.forEach(x=>{x.clusters = objToStrMap(x.clusters)})
 }
 function strMapToObj(strMap) {
     let obj = Object.create(null);
@@ -209,37 +222,57 @@ function controlDrones(result, callback){
     // 즉 n개 자리. n개 드론. n!... 아놔 이건 어떡하지 ㅋㅋㅋ 모르는척 할까.. mcmf로 해결 가능 나중에 임베딩해서 쓰자. 일단 패스
     // result = logic.mcmf(result.drones.slice(0,3), service.drone.list)
     var i = 0;
+    var index = 0;
     var tasks = [];
     async.waterfall([
         function(callback){
             async.whilst(
                 function () { 
                     // 매 초 확인. kill이 들어오면 즉시 종료
-                    console.log("@@@ i : " + i)
                     return i < service.drone.list.length
                 },function(callback){
                     var drone = result.drones[i]
-                    var position = drone.position
-                    tasks.push(function(callback){
-                        setTimeout(function(){
-                            callback(null, "ok: " + i)
-                         }, 1000); 
-                    })
+                    if(drone != undefined){
+                        var position = drone.position
+                    
+                        tasks.push(function(callback){
+                            async.waterfall([
+                                function(callback){
+                                    // console.log(service)
+                                    request({
+                                        url : serverURI + serviceMonitorPort + "/send",
+                                        method:"POST",
+                                        json:true,
+                                        body:{
+                                            mac:service.drone.list[index].mac,
+                                            msg:[{cmd:'gotoPos'}]
+                                        },
+                                        },function (err, response, body) {
+                                            if (err) console.log(err)
+                                            // console.log(body)
+                                            callback(null,body)
+                                        }
+                                    ) 
+                                }
+                            ],function(err,result){
+                                index++
+                                callback(null,result)
+                            })
+                        })
+                    }
                     i++
-                    callback(null)
+                    callback(null,"ok")
                     // setTimeout(function(){callback(null)},1000)
-                },function(err){
-                    callback(null)
-            })
-        },
-        function(err, result){
-            async.parallel(tasks, function (err, result) {
-                console.log("A")
-                callback(null, result)
-            });
-        }
+                },function(err,result){
+                    callback(null,"ok")
+                })
+            },
+            function(result){
+                async.series(tasks, function (err, result) {
+                    callback(null, result)
+                });
+            }
     ],function (err, result) {
-        console.log("B")
         callback(null, result)
       });
 }
@@ -287,7 +320,7 @@ function getCycleSeqence(){
     if(currentCycle > endCycle) return -1
     else{
         var seq = currentCycle - startCycle
-        return seq > 0 ? seq : -1 
+        return seq >= 0 ? seq : -1 
     }
 }
 function getCycle(date){
@@ -296,3 +329,7 @@ function getCycle(date){
 }
 
 module.exports.main = main
+module.exports.outputFileData = outputFileData
+module.exports.update = update
+module.exports.getUpdate = getUpdate
+

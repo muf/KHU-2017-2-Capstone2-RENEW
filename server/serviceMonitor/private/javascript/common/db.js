@@ -36,6 +36,19 @@ function getDrones(req, res, callback){
         }
     }, res)
 }
+function getDroneByIds(req, res, callback){
+    var objectIds = req.body.objectIds
+    drone.find({
+        _id: {
+            $in: objectIds
+        }
+   },function(err, drone){
+       if(typeof callback === 'function') {
+           if(err) return callback(err, res, drone)
+           else return callback(undefined, res, drone)
+       }
+   }, res)
+}
 
 // @ serviceApplication
 var serviceApplication = require('../../../model/serviceApplication')
@@ -149,7 +162,46 @@ function updateServiceAddress(req, res, callback){
         }
     });
 }
+function removeDrone(req, res, callback){
+    var objectId = req.body.objectId
+    drone.remove({
+        _id: objectId
+    },
+    function(err, result) {
+        if(typeof callback === 'function') {
+            if(err) return callback(err, res, result)
+            else return callback(undefined, res, result)
+        }
+    });
+}
+function removeServiceFromDrone(req, res, callback){
 
+    var serviceId = req.body.serviceId
+
+    drone.update(
+        {},
+        {$pull: { 
+            services: {
+                id:serviceId
+            }
+        }
+        },
+        {multi: true},
+        function(err, result) {
+            if(typeof callback === 'function') {
+                if(err) return callback(err, res, result)
+                else return callback(undefined, res, result)
+            }
+        })
+    // db.stores.update(
+    //     { },
+    //     { $pull: { fruits: { $in: [ "apples", "oranges" ] }, vegetables: "carrots" } },
+    //     { multi: true }
+    // )
+}
+
+module.exports.removeDrone = removeDrone
+module.exports.removeServiceFromDrone = removeServiceFromDrone
 module.exports.updateServiceAddress = updateServiceAddress
 module.exports.submitServiceApplication = submitServiceApplication
 module.exports.getServicesByState = getServicesByState
@@ -160,3 +212,4 @@ module.exports.updateServiceState = updateServiceState
 module.exports.putService = putService
 module.exports.putDrone = putDrone
 module.exports.getDrones = getDrones
+module.exports.getDroneByIds = getDroneByIds

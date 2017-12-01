@@ -17,7 +17,12 @@ function initRegisterPage(){
                 alert(data.err.message)
             }
             else{
-                service = data
+                service = data   
+                app = new droneClusterMarkerWrapper(new clusterMarkerWrapper(new droneMarkerWrapper(new mapEventWrapper(baseMapHandler))))
+                app.map.setCenter({
+                    lat: (service.bounds.max.lat + service.bounds.min.lat)/2,
+                    lng: (service.bounds.max.lng + service.bounds.min.lng)/2
+                })
             }   
             
             $.ajax({
@@ -49,8 +54,6 @@ function initRegisterPage(){
             alert("Internal Error")     
         }
     })
-    app = new droneClusterMarkerWrapper(new clusterMarkerWrapper(new droneMarkerWrapper(new mapEventWrapper(baseMapHandler))))
-
 }
 function applyInputData(){
     input = []

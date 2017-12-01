@@ -5,10 +5,11 @@ var droneSchema = new mongoose.Schema({
     mac : {type: String, default: '0'},
     port: { type: String, default: '0000' },
     model: { type: String, default: 'bebop2' },
-    state: { type: String, default: 'ready' },
+    state: { type: String, default: 'waiting' },
     gps: {
         lat: { type: String, default: -1 },
-        lng: { type: String, default: -1 }
+        lng: { type: String, default: -1 },
+        al: { type: String, default: -1 }
     },
     services:[{id: String, serviceStartDate: Date, serviceEndDate: Date}]
 });

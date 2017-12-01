@@ -26,24 +26,90 @@ function addTableEvents(){
 
   $('#table-container tbody tr button').click(function(event){
       var id = event.currentTarget.id
-      if( id == "make-data"){
-          makeDataAction(event)
-      }else if(id == "execute"){
-        executeAction(event)
-      }else if(id == "view"){
-        viewAction(event)
-      }
-      
-      else{
-          return ;
-      }
-     
+        if( id == "make-data"){
+            makeDataAction(event)
+        }else if(id == "execute"){
+            executeAction(event)
+        }else if(id == "view"){
+            viewAction(event)
+        }else if(id == "term"){
+            term(event)
+        }else if(id == "delete"){
+            remove(event)
+        }
+        else{
+            return ;
+        }
     })
+}
+function remove(event){
+    var tr = event.currentTarget.parentElement.parentElement
+    var serviceId = tr.getElementsByTagName('td')[0].innerHTML
+
+    if(confirm("서비스를 제거하시겠습니까?")==true){   
+        $.ajax({
+            url : "/removeServiceFromDrone",
+            type: "POST",
+            data : {serviceId},
+            success: function(data, textStatus, jqXHR)
+            {
+                //data - response from server
+                alert("삭제")
+                location.reload()
+            },
+            error: function (jqXHR, textStatus, errorThrown)
+            {
+                alert("실패")
+                location.reload()
+            }
+        });
+    }
+}
+function term(event){
+    var tr = event.currentTarget.parentElement.parentElement
+    var serviceId = tr.getElementsByTagName('td')[0].innerHTML
+
+    if(confirm("서비스를 종료하시겠습니까?")==true){    
+        $.ajax({
+            url : "/getServiceApplication",
+            type: "POST",
+            data : {
+                serviceId: serviceId
+            },
+            success: function(data, textStatus, jqXHR)
+            {
+                $.ajax({
+                    url : "/termService",
+                    type: "POST",
+                    data : {
+                        pid: data.server.pid,
+                        serviceId: serviceId
+                    },
+                    success: function(data, textStatus, jqXHR)
+                    {
+                        console.log(JSON.stringify(data)) 
+                        alert("종료되었습니다.")
+                        location.reload(); // 성공 시 다시 로드하여 페이지를 갱신한다.                   
+                    },
+                    error: function (jqXHR, textStatus, errorThrown)
+                    {
+                        alert("종료 실패") 
+                        location.reload(); // 성공 시 다시 로드하여 페이지를 갱신한다.      
+                    }
+                });              
+            },
+            error: function (jqXHR, textStatus, errorThrown)
+            {
+                console.log("error: " + errorThrown)     
+            }
+        });
+    }
 }
 function viewAction(event){
     var tr = event.currentTarget.parentElement.parentElement
-    var port = tr.getElementsByTagName('td')[8].innerHTML
-    window.open(`localhost://${port}`,'_blank')  
+    var port = tr.getElementsByTagName('td')[5].innerHTML
+    var id = tr.getElementsByTagName('td')[0].innerHTML
+    window.open(`http://14.33.77.250:${port}/resultPage?serviceId=${id}`,'_blank')  
 }
 
 function makeDataAction(event){
@@ -83,15 +149,13 @@ function executeAction(event){
             },
             success: function(data, textStatus, jqXHR)
             {
-                alert("ok")
                 if(data.err!=undefined){
                     alert(data.err.message)
                     location.reload(); // 성공 시 다시 로드하여 페이지를 갱신한다.  
                 }
                 else{
                     alert("서비스 실행에 성공하였습니다.") 
-                    var port = data.port
-                    alert(port)
+                    var port = data.port//?
                     location.reload(); // 성공 시 다시 로드하여 페이지를 갱신한다.  
                 }              
             },

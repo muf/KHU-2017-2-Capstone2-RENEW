@@ -12,22 +12,51 @@ function addTableEvents(){
         if(confirm("안녕하십니까?")==true){
             alert("하이~")
         }
+    })
+
+    $('#table-container tbody tr button').click(function(event){
+        var id = event.currentTarget.id
+        var tr = event.currentTarget.parentElement.parentElement
+        var objectId = tr.getElementsByTagName('td')[0].innerHTML
+        if( id == "remove-drone"){
+            // viewResultPage(event)
+            alert(`remove ${objectId}`)
+            $.ajax({
+                url : "/removeDrone",
+                type: "POST",
+                data : {objectId},
+                success: function(data, textStatus, jqXHR)
+                {
+                    //data - response from server
+                    alert("삭제")
+                    location.reload()
+                },
+                error: function (jqXHR, textStatus, errorThrown)
+                {
+                    alert("실패")
+                    location.reload()
+                }
+            });
+
+        }
+        else{
+            return ;
+        }
+       
       })
 }
 
 function addDrone(){
-    var ip = $('#drone-ip').val()
-    var port = $('#drone-port').val()
-    var model = $('#drone-model').val()
-    var state = $('#drone-state').val()
-    var mac = $('#drone-mac').val()
+    var mac = $('#drone-mac').val().trim()
     var data={};
 
-    if(ip!="") data.ip = ip;
-    if(port!="") data.port = port;
-    if(model!="") data.model = model;
-    if(state!="") data.state = state;
-    if(mac!="") data.mac = mac;
+    if(mac==""){
+        alert("MAC 정보를 입력해주세요")
+        return;
+    }
+    else{
+        data.mac = mac
+    }
 
     $.ajax({
         url : "/addDrone",

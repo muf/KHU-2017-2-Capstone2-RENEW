@@ -44,7 +44,7 @@ router.post('/createServiceApplication', cors(), function(req, res) {
             )
         },
         function(body, callback){
-            var flag = body.droneNum < body.body.length
+            var flag = body.droneNum <= body.body.length
             callback(null, {flag:flag,drones:body})
         },
         function (data, callback) {
@@ -133,6 +133,46 @@ router.post('/applyCheck',cors(), function(req, res) {
         }
     });
 })
+router.post('/removeServiceFromDrone',cors(), function(req,res){
+ 
+    async.waterfall([
+        function (callback) {  
+            dao.getServiceById(req, res, function(err, res, service){
+                if (err) callback(err, service)
+                else{
+                    callback(null, service)
+                }
+            })
+        },function(result, callback){  
+            dao.removeServiceFromDrone(req, res, function(err, res, result){
+                if (err) callback(err, result)
+                callback(null, result)
+            })
+        },
+        function(result, callback){
+            if(result.err != undefined){
+                callback(null, {err:result.err})
+            }
+            else{
+                req.body.state = "delete"
+                dao.updateServiceState(req, res, function(err, res, drone){
+                    if(err) callback(err)
+                    callback(null, result)
+                })
+            }
+        },
+      ], function (err, result) {
+        if(err) return res.status(500).send("fail")
+        res.json(result)
+      });
+})
+router.post('/remove',cors(), function(req,res){
+    dao.remove(req, res, function(err, res, result){
+        if(err) return res.status(500).send("fail")
+        res.json(result)
+    })
+})
+
 router.post('/submitService', cors(), function(req, res) { 
     var tasks = [
         function (callback) {  
@@ -156,7 +196,7 @@ router.post('/submitService', cors(), function(req, res) {
             )
         },
         function(data, callback){
-            var flag = data.service.drone.num < data.drones.length
+            var flag = data.service.drone.num <= data.drones.length
             callback(null, {flag:flag,drones:data.drones, service: data.service})
         },
         function (data, callback) {  
@@ -167,7 +207,10 @@ router.post('/submitService', cors(), function(req, res) {
                // 성공 시 성공 방환
                 data.applicationModelInput = []
                 for(var i = 0; i < data.service.drone.num; i++){
-                    data.applicationModelInput.push({id:data.drones[i]._id})
+                    data.applicationModelInput.push({
+                            id:data.drones[i]._id,
+                            mac: data.drones[i].mac
+                        })
                 }   
                 data.droneModelInput = {
                     id: data.service._id, 
@@ -247,7 +290,6 @@ router.post('/executeService', cors(), function(req, res) {
             else{
                 req.body.server = { // executor server
                     pid: req.body.pid,
-                    ip: "127.0.0.1",
                     port:  req.body.port
                 }
                 dao.updateServiceAddress(req, res, function(err, res, drone){
@@ -267,6 +309,12 @@ router.post('/getServiceApplication',cors(), function(req, res) {
     dao.getServiceById(req, res, function(err, res, drone){
         if(err) return res.status(500).send("fail")
         res.status(200).send(drone);
+    })
+}) 
+router.post('/getDroneByIds',cors(), function(req, res) {
+    dao.getDroneByIds(req, res, function(err, res, drone){
+        if(err) return res.status(500).send("fail")
+        res.json(drone);
     })
 }) 
 
@@ -343,11 +391,11 @@ router.post('/getClusteredData', cors(), function(req, res) {
         )}
         ], function (err, path) {
             if(err) res.status(500).send("fail")
-            console.log(path)
+            // console.log(path)
             var stream = fs.readFileSync(path)
             var data = JSON.parse(JSON.parse(stream))
             // 임시로 cluster 넣어서 진행
-            console.log(util)
+            // console.log(util)
             result = dbscan.run(data[seq], 10, 3, util.distanceTo);
             data[seq].forEach(x=>{x.cluster=0},data[seq])
             for(idx in result){
@@ -355,8 +403,8 @@ router.post('/getClusteredData', cors(), function(req, res) {
                     data[seq][result[idx][jdx]].cluster = Number(idx)+1
                 }
             }
-            console.log("result : " + JSON.stringify(result))
-            console.log("noise: " + JSON.stringify(result))
+            // console.log("result : " + JSON.stringify(result))
+            // console.log("noise: " + JSON.stringify(result))
             res.json(data[seq])
         });
 }) 

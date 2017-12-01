@@ -6,11 +6,11 @@ function run(query, callback, block = false){
     var result=""
     // const proc = spawn(query.program, query.params);
     
-    var proc = spawn(query.program,query.params)
+    var proc = spawn(query.program,query.params,{detached:true})
 
     proc.stdout.on('data', (data) => {
         result += `stdout: ${data}`
-        console.log(`stdout: ${data}`)
+        // console.log(`stdout: ${data}`)
     });
     
     proc.stderr.on('data', (data) => {
@@ -36,7 +36,7 @@ function run(query, callback, block = false){
   function getPortByPid(proc, callback){
     var pid = proc.pid
 	var query = "lsof -Pan -p " + pid + " -i | grep \'*\' | awk \'{split($9,data,\":\"); printf(\"\\n\");printf(\"%s\",data[2]);}\'"
-    console.log(query)
+    // console.log(query)
     setTimeout(function(){    
         exec(query, (error, stdout, stderr) => {
             if (error) {
@@ -51,12 +51,27 @@ function run(query, callback, block = false){
             }
         });
     },2000)
-    //   var query = "lsof -Pan -p " + pid + " -i | grep \'*\' | awk \'{split($9,data,\":\"); printf(\"\\n\");printf(\"%s\",data[2])}\'"
-    //   console.log(query)
-    //   var data = []
-    //   var proc = exec(query, function(err,stdout,stderr){
-    //       callback({err, stdout, stderr})
-    //   })
+  }
+
+function termService(req, callback){
+
+    var pid = req.body.pid
+    var query = `kill -9 ${pid}`
+    console.log(query)
+    setTimeout(function(){    
+        exec(query, (error, stdout, stderr) => {
+            if (error) {
+            console.error(`exec error: ${error}`);
+                callback({err:true,msg: "@ : ${error}",req:req})
+            }
+            console.log(`stdout: ${stdout}`);
+            console.log(`stderr: ${stderr}`);
+            
+            if(typeof callback === 'function'){
+                callback({msg:"@ "+stdout,req:req})
+            }
+        });
+    },1000)
   }
 
 function getRealPid(pid, callback){
@@ -73,7 +88,7 @@ function runExecutor(serviceId ,callback){
     var program = 'node'
     var params = ['/Users/junghyun.park/Desktop/git/KHU-2017-2-Capstone2-RENEW/app.js', '--config=serviceExecutor', serviceId]
     var query = {program: program, params: params}
-    console.log(query)
+    // console.log(query)
     run(query, function(proc){
         getPortByPid(proc, function(address){
             callback(address)
@@ -88,7 +103,7 @@ function runClusterMaker(path ,callback){
         path: path
     }
     var query = {program: program, params: params}
-    console.log(query)
+    // console.log(query)
     runR(query, function(clusterPath){
         callback(clusterPath)
     })
@@ -99,7 +114,7 @@ function runR(query, callback){
     var query = `echo ${path}`
     // var clusterPath = path.split('.input')[0]+'.cluster'
     var clusterPath = path
-    console.log(query)
+    // console.log(query)
     setTimeout(function(){    
         exec(query, (error, stdout, stderr) => {
             if (error) {
@@ -122,6 +137,7 @@ function runR(query, callback){
     //   })
   }
 module.exports.run = run
+module.exports.termService = termService
 module.exports.runClusterMaker = runClusterMaker
 module.exports.getRealPid = getRealPid
 module.exports.getPortByPid = getPortByPid

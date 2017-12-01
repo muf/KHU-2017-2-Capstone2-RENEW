@@ -34,10 +34,7 @@
               <th>서비스 신청 시점</th>
               <th>서비스 시작 시점</th>
               <th>서비스 종료 시점</th>
-              <th>최소 드론 수</th>
-              <th>최대 드론 수</th>
-              <th>현재 드론 수</th>
-              <th>서버 주소</th>
+              <th>드론수</th>
               <th>서버 포트</th>
               <th>이메일</th>
               <th>전화번호</th>
@@ -54,21 +51,21 @@
                 <td class="table-data"><%= submitList[i].loggingDate %></td>
                 <td class="table-data"><%= submitList[i].serviceStartDate %></td>
                 <td class="table-data"><%= submitList[i].serviceEndDate %></td>
-                <td><%= submitList[i].drone.min %></td>
-                <td><%= submitList[i].drone.max %></td>
-                <td><%= submitList[i].drone.max %></td>
-                <td><%= submitList[i].server.ip %></td>
+                <td><%= submitList[i].drone.num %></td>
                 <td><%= submitList[i].server.port %></td>
                 <td><%= submitList[i].contact.email %></td>
                 <td><%= submitList[i].contact.number %></td>
                 <td><%= submitList[i].state %></td>
-                <td><button type="button" id="make-data" class="btn btn-info"> make data </button></td>
                 <% if(submitList[i].state == 'execute'){%>
                   <td><button type="button" id="view" class="btn btn-info"> view </button></td>
+                  <td><button type="button" id="term" class="btn btn-info"> term </button></td>
                 <%}%>
                 <% if(submitList[i].state == 'submit'){%>
-                <td><button type="button" id="execute" class="btn btn-info"> execute </button></td>
+                  <td><button type="button" id="make-data" class="btn btn-info"> make data </button></td>
+                  <td><button type="button" id="execute" class="btn btn-info"> execute </button></td>
+                  <td><button type="button" id="delete" class="btn btn-info"> delete </button></td>
                 <%}%>
+
               </tr>
             <% } %>
           </tbody>
