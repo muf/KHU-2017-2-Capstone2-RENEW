@@ -4,8 +4,6 @@ function initRegisterPage(){
 }
 
 function selectArea(){
-    console.log("selectArea")
-    console.log("applyService")
     if(app.area === null){
         alert("지도를 더블 클릭하여 서비스 영역을 지정해 주세요.")
         return 
@@ -60,16 +58,8 @@ function applyService(){
     }
     var serviceStartDate = $('#service-start-date').data("DateTimePicker").date()._d
     var serviceEndDate = $('#service-end-date').data("DateTimePicker").date()._d
-    // @@@ 여기 좀 바꿔야함..
     var droneNum = $('#drone-num').val()
-    // var droneMin = $('#drone-min').val()
-    // var droneMax = $('#drone-max').val()
-    // // 값이 정상적이지 않은 경우 교정 진행
-    // if(droneMax < droneMin){
-    //     var temp = droneMin
-    //     droneMin = droneMax
-    //     droneMax = temp
-    // }
+
     if(serviceStartDate > serviceEndDate){
         var temp = serviceStartDate
         serviceStartDate = serviceEndDate
@@ -79,10 +69,6 @@ function applyService(){
         alert("시작 날짜가 유효하지 않습니다.")
         return 
     }
-    // else if( serviceEndDate - serviceStartDate < 3500000){
-    //     alert("서비스는 최소 1간 이상 이용해야 합니다.")
-    //     return 
-    // }
 
     var email = $('#email').val()
     var contactNumber = $('#contact-number').val()
@@ -114,7 +100,7 @@ function applyService(){
                 alert(data.err.message)
             }
            else{
-                alert("접수 되었습니다.") // db query 날리고 성공하면 접수 ㅇㅋ 하고 종료... 서비스 관리 및 로그인? 이런 건 안 할 예정 
+                alert("접수 되었습니다.")
             }
         },
         error: function (jqXHR, textStatus, errorThrown)

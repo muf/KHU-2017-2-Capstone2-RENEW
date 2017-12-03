@@ -102,14 +102,8 @@ router.post('/applyCheck',cors(), function(req, res) {
             var list = []
             results[0].forEach(function(drone){
                 var flag = true
-                // 충전시간 및 비행 시간도 고려해야함. 나중에 중심부까지 날아가는 시간 고려하는 것도 만들어야 함. 일단은 고려하지 않음.
                 drone.services.forEach(function(service){
-                    // if(service.serviceStartDate <= new Date(serviceEndDate)){
-                    //     flag = false
-                    // }
-                    // if(service.serviceEndDate >= new Date(serviceStartDate)){
-                    //     flag = false
-                    // }
+
                     var condition1 = 
                         service.serviceStartDate <= new Date(serviceEndDate) 
                         &&  new Date(serviceEndDate) <= service.serviceEndDate
@@ -246,27 +240,44 @@ router.post('/executeService', cors(), function(req, res) {
             dao.getServiceById(req, res, function(err, res, service){
                 if (err) callback(err, service)
                 else{
-                    callback(null, service)
+                    if(service.serviceStartDate.getTime() > new Date().getTime()){
+                        var err = {message:"서비스 기간이 아닙니다."}
+                        callback(null, {err})
+                    }
+                    else if(service.serviceEndDate.getTime() < new Date().getTime()){
+                        var err = {message:"이미 만료된 서비스 입니다."}
+                        callback(null, {err})
+                    }
+                    else{
+                        callback(null, service)
+                    }
                 }
             })
         },
         function (service,callback) {
-            var flag = service.blob.fileName == "" ? false : true
-            if(flag){
-                request({
-                    url:'http://localhost:3002/newServiceRequest',
-                    method:"POST",
-                    json:true,
-                    body:service,
-                    },function (err, response, body) {
-                        if (err) callback(err, true)
-                        callback(null, body)
-                    }
-                )
+
+            if(service.err != undefined){
+                callback(null, {err:service.err})
             }
             else{
-                var err = {message:"입력 데이터가 없습니다."}
-                callback(null, {err})
+                var flag = service.blob.fileName == "" ? false : true
+                if(flag){
+                    request({
+                        url:'http://localhost:3002/newServiceRequest',
+                        method:"POST",
+                        json:true,
+                        body:service,
+                        },function (err, response, body) {
+                            if (err) callback(err, true)
+                            callback(null, body)
+                        }
+                    )
+                }
+                else{
+                    var err = {message:"입력 데이터가 없습니다."}
+                    callback(null, {err})
+                }
+
             }
         },
         function(result, callback){
@@ -336,7 +347,6 @@ router.post('/saveInputBlob', cors(), function(req, res) {
             res.json("ok")
         })
     });
-    // 1511701830769
 }) 
 router.post('/saveOutputBlob', cors(), function(req, res) {
     var input = JSON.stringify(req.body.input)
@@ -372,7 +382,6 @@ router.post('/getBlobData',cors(), function(req, res) {
     var stream = fs.readFileSync(path)
     var data = JSON.parse(JSON.parse(stream))
     res.json(data)
-    // 1511701830769
 }) 
 router.post('/getClusteredData', cors(), function(req, res) {
     var path = req.body.path
@@ -391,31 +400,19 @@ router.post('/getClusteredData', cors(), function(req, res) {
         )}
         ], function (err, path) {
             if(err) res.status(500).send("fail")
-            // console.log(path)
+
             var stream = fs.readFileSync(path)
             var data = JSON.parse(JSON.parse(stream))
-            // 임시로 cluster 넣어서 진행
-            // console.log(util)
-            result = dbscan.run(data[seq], 10, 3, util.distanceTo);
+            result = dbscan.run(data[seq], 20, 3, util.distanceTo);
             data[seq].forEach(x=>{x.cluster=0},data[seq])
             for(idx in result){
                 for(jdx in result[idx]){
                     data[seq][result[idx][jdx]].cluster = Number(idx)+1
                 }
             }
-            // console.log("result : " + JSON.stringify(result))
-            // console.log("noise: " + JSON.stringify(result))
             res.json(data[seq])
         });
-}) 
-// router.post('/getInputBlob', function(req, res) {
-//     var input = JSON.stringify(req.body.input)
-//     var inputPath = '/Users/junghyun.park/Desktop/git/KHU-2017-2-Capstone2-RENEW/blob/input/'
-//     fs.writeFile(inputPath +new Date().getTime()+'.input', input, function(err) {
-//         if(err) return res.status(500).send("fail")
-//         res.json()
-//     });
-// }) 
+})
 
 
 module.exports = router

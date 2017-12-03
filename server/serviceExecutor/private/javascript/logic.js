@@ -138,8 +138,6 @@ function makeGroups(rawList){
     // 각 클러스터끼리 우선 grouping..
     rawList.drones = []
     rawList.clusters.forEach(x=>makeGroup(x,rawList),rawList)
-    // var gridArray = rawList.clusters.get(0).gridArray;
-    // printGrid(gridArray)
     return rawList
 }
 function addDrone(drones){
@@ -346,7 +344,7 @@ function groupNodes2(drones, cluster, boundary = true, threshold = 10, nodeCover
     printGrid(gridArray)
 
     
-}``
+}
 function coreProcess(drones, cluster, bufferQueue, threshold, nodeCoverage){
     var gridArray = cluster.gridArray
     while(bufferQueue.length >= threshold){

@@ -7,7 +7,6 @@ module.exports = function(conf) {
             var express = require('express')
             var path = require('path');
             var bodyParser = require('body-parser');
-            var mongoose    = require('mongoose');
 
             // load router sub apps
             

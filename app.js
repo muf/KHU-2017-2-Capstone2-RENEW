@@ -1,6 +1,5 @@
 const argv = require('minimist')(process.argv.slice(2));
 var conf = {}
-// console.log(argv)
 // 파라미터를 추가적으로 받지 않는 경우 conf/main에 설정된 serverName 값을 참고하고 conf load
 if(argv.config == undefined){
     console.log("no config params")

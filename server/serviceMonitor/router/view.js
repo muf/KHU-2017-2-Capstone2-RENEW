@@ -48,8 +48,6 @@ router.get('/dataGeneratePage?:serviceId',function(req, res, next) {
 
 router.get('/resultPage?:serviceId',function(req, res, next) {
     var serviceId = req.query.serviceId
-    // 결과물 읽어서 json 형태로 가져온 다음 넘기자.
-    // test로 가져오자 일단.
     req.body.serviceId = serviceId
     async.waterfall([
         function (callback) {  
@@ -65,7 +63,7 @@ router.get('/resultPage?:serviceId',function(req, res, next) {
           )
         },//getServiceApplication
         function(result, callback){
-            req.body.path = result.blob.outputBasePath + result.blob.fileName // @@@ 임시로 inputBasePath로 설정
+            req.body.path = result.blob.outputBasePath + result.blob.fileName
             req.body.service = result
             request({
                 url:'http://localhost:3002/getBlobData',

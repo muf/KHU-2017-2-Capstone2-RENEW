@@ -1,4 +1,4 @@
-// 사용자 데이터 정보를 가상으로 생성해주는 제너레이터 웹 앱
+
 var tool = require('cloneextend')
     ,conf = {};
     conf.defaults = {

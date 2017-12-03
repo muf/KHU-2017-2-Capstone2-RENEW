@@ -2,7 +2,7 @@
 var mapHandlerObject = function(){
   // @ attribute
   this.map = new google.maps.Map(document.getElementById('map'), {
-    center: {lat: 37.497908, lng: 127.027619},
+    center: {lat: 37.246117, lng: 127.073680},
     zoom: 16,
     mapTypeId: google.maps.MapTypeId.ROADMAP,
     zoomControl: true,

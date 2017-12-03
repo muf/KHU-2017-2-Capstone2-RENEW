@@ -6,6 +6,7 @@ var dataList = []
 var drones = []
 var globalTest;
 var realMode = true
+var noiseMode = false
 var serverURI = "http://14.33.77.250"
 var serviceMonitorPort=":3002"
 function show(event){
@@ -14,9 +15,21 @@ function show(event){
     console.log(`index : ${index}`)
     app.map.wrappers.inputMarkerWrapper.clearAll()
     dataList[index].data.input.forEach(node => {
-        app.map.wrappers.inputMarkerWrapper.addMarker(node)
+        if(!noiseMode){
+            if(node.cluster!=0) app.map.wrappers.inputMarkerWrapper.addMarker(node)
+        }
+        else{
+            app.map.wrappers.inputMarkerWrapper.addMarker(node)
+        }
     })
-
+}
+function toggleNoiseMode(){
+    if(noiseMode){
+        noiseMode = false
+    }else{
+        noiseMode  = true
+    }
+    console.log(noiseMode)
 }
 function realTimeMode(){
     console.log("real mode")
@@ -26,7 +39,12 @@ function realTimeMode(){
 function draw(list){
     app.map.wrappers.inputMarkerWrapper.clearAll()
     list.forEach(node => {
-        app.map.wrappers.inputMarkerWrapper.addMarker(node)
+        if(!noiseMode){
+            if(node.cluster!=0) app.map.wrappers.inputMarkerWrapper.addMarker(node)
+        }
+        else{
+            app.map.wrappers.inputMarkerWrapper.addMarker(node)
+        }
     })
 }
 function drawDrones(){
@@ -77,7 +95,7 @@ function getDrones(){
                     drawDrones()
                     $('#side-table-container2 .table tbody tr').remove()
                     for(var i = 0; i < app.map.wrappers.droneMarkerWrapper.markers.length; i ++){
-                        tr = $(`<tr> <td id = "drone${i}"> ${app.map.wrappers.droneMarkerWrapper.markers[0].node.drone.mac} </td></tr>`).appendTo('#side-table-container2 .table tbody')
+                        tr = $(`<tr> <td id = "drone${i}"> ${app.map.wrappers.droneMarkerWrapper.markers[i].node.drone.mac} </td></tr>`).appendTo('#side-table-container2 .table tbody')
                         tr.click(function(event){
                             focusDrone(event)
                         })
@@ -138,7 +156,7 @@ function resetGPSTimer(interval){
 function initRegisterPage(){
     timer = setInterval(function(){
         reload()
-    },10000)
+    },1000)
 
     gpsTimer = setInterval(function(){
         getDrones()

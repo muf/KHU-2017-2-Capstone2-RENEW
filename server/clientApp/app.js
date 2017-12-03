@@ -7,12 +7,10 @@ module.exports = function(conf) {
             var express = require('express')
             var path = require('path');
             var bodyParser = require('body-parser');
-            var mongoose    = require('mongoose');
             var cors = require('cors')();
             
             // load router sub apps
             var index_router = require('./router/index')
-            var dataAccess_router = require('./router/dataAccess')
             
             // make instances
             var app = express()
@@ -29,7 +27,6 @@ module.exports = function(conf) {
             app.use(bodyParser.urlencoded({ extended: true })); // parse the text as url encoded data. [false]:parse only once. [true]:parse every time (?????)
                 // register rounter sub apps
             app.use('/', index_router) 
-            app.use('/', dataAccess_router) 
             
             // use error check
             app.use(function(err, req, res, next) {

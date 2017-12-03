@@ -5,7 +5,7 @@ var async = require('async')
 
 var testMode = true
 var logic = require(__dirname+'/logic.js')
-var drone = require(__dirname+'/drone.js')
+// var drone = require(__dirname+'/drone.js')
 var ready = false
 var serverURI = "http://14.33.77.250"
 var serviceMonitorPort=":3002"
@@ -28,16 +28,13 @@ function getUpdate(){
 }
 function main(count){
     // 매 주기 마다 상태를 체크한다.
-    // 
     console.log("main start")
-    readyForTask() //@@ test task 준비
+    readyForTask() 
     async.whilst(
         function () { 
             // 매 초 확인. kill이 들어오면 즉시 종료
             count++
-            // console.log(`count: ${count}`)
-    // console.log("update:" + updateFlag)
-            // close test용 함수
+            // 비상 종료 
             if(count > 500000){
                 //interrupt.kill
                 interrupt.kill= true
@@ -50,6 +47,9 @@ function main(count){
             if(!mutex.lock && !interrupt.pause){
                 var nextSeq = getCycleSeqence()
                 console.log(nextSeq)
+                if(nextSeq == -2){
+                    process.exit()
+                }
                 if(nextSeq < 0) {
                     errList.push("시간이 맞지 않습니다.")
                     interrupt.kill = true  // for test
@@ -57,19 +57,19 @@ function main(count){
                 if(nextSeq > seq ){
                     console.log(`seq : ${seq} -> ${nextSeq}`)
                     seq = nextSeq // 더 큰 seq라면 업데이트
-                    taskTick = true // task 준비 완료 신호 //test@@@ 테스크는 진행하지 않는다.
+                    taskTick = true // task 준비 완료 신호
                 } 
                 
             }
             return true
         },
         function (callback) {
-            if(errCount > 3){
+            if(errCount > 100){
                 callback(err = {message: "mainTask가 정상적인 시간내에 종료되지 않음."})
             }
             checkTimer = setTimeout(function(){
                callback()
-            }, 1000); 
+            }, 100); 
             // 비동기 함수. 문제 발생 시 임의로 pause 할 수 있다.
             if(!interrupt.pause && taskTick){
                 mainTask(callback)
@@ -79,7 +79,6 @@ function main(count){
         // 반복 다 끝나면 여기로
         function (err) {
             if(err) console.log(err.message)
-            // 5 seconds have passed
             exitProcess()
         }
     )
@@ -118,7 +117,6 @@ function getServiceData(callback){
 }
 // 데이터 읽어와서 변수에 저장
 function getInputData(result, callback){ 
-    // console.log(service)
     request({
         url : "http://localhost:3002/getBlobData",
         method:"POST",
@@ -137,7 +135,6 @@ function mainTask(callback){
     // 클러스터 돌려서 변수에 저장
     // 알고리즘 돌려서 결과 변수에 저장
     // 드론 명령 후 확인
-    // 드론 도착 확인.. (이게 너무 먼 거리가 되는 경우 ..? 이상한게 맞음)
 
     if(mutex.lock == false){
         errCount = 0 // 에러 카운트 초기화
@@ -158,7 +155,7 @@ function mainTask(callback){
             mutex.lock = false
             updateFlag = true
             if(ready){
-                interrupt.kill = true  // for test
+                interrupt.kill = true 
             }
             console.log("-----------------------------   END   ----------------------------")
           });
@@ -193,16 +190,6 @@ function runAlgorithm(result, callback){
         outputFileData.push(outputData)
         callback(null, rawList)
     })
-
-    // // 결과 만들어서 push push 
-    // var outputData = result
-    // outputData.clusters = strMapToObj(outputData.clusters)
-    // outputFileData.push(outputData)
-    // // outputFileData.forEach(x=>{x.clusters = strMapToObj(x.clusters)})
-    // // var input = JSON.stringify(JSON.stringify(outputFileData))
-
-    // // var output  = JSON.parse(JSON.parse(input))
-    // // output.forEach(x=>{x.clusters = objToStrMap(x.clusters)})
 }
 function strMapToObj(strMap) {
     let obj = Object.create(null);
@@ -321,6 +308,7 @@ function getCycleSeqence(){
     var currentCycle = getCycle(new Date())
     var startCycle = getCycle(new Date(service.serviceStartDate))
     var endCycle = getCycle(new Date(service.serviceEndDate))
+    if(currentCycle < startCycle) return -2
     if(currentCycle+1 > endCycle) ready = true
     if(currentCycle > endCycle) return -1
     else{
@@ -329,7 +317,7 @@ function getCycleSeqence(){
     }
 }
 function getCycle(date){
-	var d1 = new Date(Math.floor(date/60000))
+	var d1 = new Date(Math.floor(date/10000))
 	return d1.getTime() 
 }
 

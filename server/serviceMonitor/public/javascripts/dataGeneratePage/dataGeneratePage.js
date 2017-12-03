@@ -40,7 +40,7 @@ function applyInputData(){
     start = new Date(service.serviceStartDate)
     end = new Date(service.serviceEndDate)
     var diff = end.getTime() - start.getTime()
-    var minutes = diff / 60000 // 1분 마다 갱신되는 데이터 형태
+    var minutes = diff / 1000 // 1분 마다 갱신되는 데이터 형태 -> 3초로 임시 변경
     for(var i = 0; i < minutes+1; i ++){
         var newDate = 
             data.map(function(node){
@@ -62,7 +62,6 @@ function applyInputData(){
         headers: {
            'Cache-Control': 'no-cache'
         },
-        //contentType:"application/jsonrequest",
         success: function(data, textStatus, jqXHR)
         {
             if(data.err!=undefined){

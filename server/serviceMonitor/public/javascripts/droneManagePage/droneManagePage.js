@@ -65,7 +65,7 @@ function addDrone(){
         success: function(data, textStatus, jqXHR)
         {
             //data - response from server
-            alert("등록 되었습니다..") // db query 날리고 성공하면 접수 ㅇㅋ 하고 종료... 서비스 관리 및 로그인? 이런 건 안 할 예정 
+            alert("등록 되었습니다..") 
             location.reload()
         },
         error: function (jqXHR, textStatus, errorThrown)

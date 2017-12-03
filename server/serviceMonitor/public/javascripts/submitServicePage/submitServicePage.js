@@ -139,8 +139,10 @@ function makeDataAction(event){
 }
 function executeAction(event){
     if(confirm("서비스를 실행하시겠습니까?")==true){
+
         var tr = event.currentTarget.parentElement.parentElement
         var objectId = tr.getElementsByTagName('td')[0].innerHTML
+        
         $.ajax({
             url : "/executeService",
             type: "POST",
