@@ -79,10 +79,10 @@ function applyService(){
         alert("시작 날짜가 유효하지 않습니다.")
         return 
     }
-    else if( serviceEndDate - serviceStartDate < 3500000){
-        alert("서비스는 최소 1시간 이상 이용해야 합니다.")
-        return 
-    }
+    // else if( serviceEndDate - serviceStartDate < 3500000){
+    //     alert("서비스는 최소 1간 이상 이용해야 합니다.")
+    //     return 
+    // }
 
     var email = $('#email').val()
     var contactNumber = $('#contact-number').val()
@@ -97,7 +97,7 @@ function applyService(){
         }
     }
     $.ajax({
-        url : "http://localhost:3002/createServiceApplication",
+        url : "http://14.33.77.250:3002/createServiceApplication",
         type: "POST",
         data : {
             serviceStartDate:serviceStartDate,
@@ -113,7 +113,7 @@ function applyService(){
             if(data.err != undefined){
                 alert(data.err.message)
             }
-            else{
+           else{
                 alert("접수 되었습니다.") // db query 날리고 성공하면 접수 ㅇㅋ 하고 종료... 서비스 관리 및 로그인? 이런 건 안 할 예정 
             }
         },

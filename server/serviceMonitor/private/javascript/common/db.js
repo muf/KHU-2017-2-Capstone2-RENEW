@@ -8,8 +8,10 @@ function putDrone(req, res, callback){
     if(req.body.mac != null)  data.mac = req.body.mac
     if(req.body.state != null)  data.state = req.body.state
     if(req.body.gps != null){
+        data.gps = {}
         if(req.body.gps.lat != null)  data.gps.lat = req.body.gps.lat
         if(req.body.gps.lng != null)  data.gps.lng = req.body.gps.lng
+        if(req.body.gps.al != null)  data.gps.al = req.body.gps.al
     }
     
     // { ip: req.body.ip, port: req.body.port, mac: req.body.mac, state: req.body.state}

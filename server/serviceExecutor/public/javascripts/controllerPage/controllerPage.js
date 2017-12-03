@@ -27,7 +27,7 @@ function addKeyboardEvent(){
     
 }
 addKeyboardEvent()
-function command(cmd){
+function command(cmd,params){
     list = [
         "land",
         "stop",
@@ -38,17 +38,21 @@ function command(cmd){
         "left",
         "up",
         "down",
-        "sendGps"
+        "sendGps",
+        "move"
     ]
     if(list.includes(cmd)){
-        console.log(cmd)
+        var msg = {cmd,date:new Date()}
+        if(params){
+            msg.position = {lat: params.lat, lng: params.lng}
+        }
         $.ajax({
             url : serverURI + serviceMonitorPort + "/send",
             method:"POST",
             json:true,
             data:{
                 mac:window.location.search.split("?mac=")[1],
-                msg:[{cmd:'land'}]
+                msg
             },
             },function (err, response, body) {
                 if (err) console.log(err)
@@ -58,5 +62,15 @@ function command(cmd){
     }
     else{
         console.log("unknown command.")
+    }
+}
+function go(){
+    var lat = $('#lat').val()
+    var lng = $('#lng').val()
+    var params = {lat, lng}
+    if(lat!="" && lng !=""){
+        lat = Number(lat)
+        lng = Number(lng)
+        command("move",params)
     }
 }

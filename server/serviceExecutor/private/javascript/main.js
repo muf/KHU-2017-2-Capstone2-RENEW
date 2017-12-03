@@ -6,7 +6,7 @@ var async = require('async')
 var testMode = true
 var logic = require(__dirname+'/logic.js')
 var drone = require(__dirname+'/drone.js')
-
+var ready = false
 var serverURI = "http://14.33.77.250"
 var serviceMonitorPort=":3002"
 // @ load models & methods
@@ -49,9 +49,10 @@ function main(count){
             // mainTask 도중에는 변경하면 안된다.
             if(!mutex.lock && !interrupt.pause){
                 var nextSeq = getCycleSeqence()
+                console.log(nextSeq)
                 if(nextSeq < 0) {
                     errList.push("시간이 맞지 않습니다.")
-                    // interrupt.kill = true  // for test
+                    interrupt.kill = true  // for test
                 }
                 if(nextSeq > seq ){
                     console.log(`seq : ${seq} -> ${nextSeq}`)
@@ -156,6 +157,9 @@ function mainTask(callback){
           ], function (err, result) {
             mutex.lock = false
             updateFlag = true
+            if(ready){
+                interrupt.kill = true  // for test
+            }
             console.log("-----------------------------   END   ----------------------------")
           });
     }
@@ -317,6 +321,7 @@ function getCycleSeqence(){
     var currentCycle = getCycle(new Date())
     var startCycle = getCycle(new Date(service.serviceStartDate))
     var endCycle = getCycle(new Date(service.serviceEndDate))
+    if(currentCycle+1 > endCycle) ready = true
     if(currentCycle > endCycle) return -1
     else{
         var seq = currentCycle - startCycle

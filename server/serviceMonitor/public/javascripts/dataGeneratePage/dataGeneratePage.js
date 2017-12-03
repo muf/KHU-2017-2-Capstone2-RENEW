@@ -41,7 +41,7 @@ function applyInputData(){
     end = new Date(service.serviceEndDate)
     var diff = end.getTime() - start.getTime()
     var minutes = diff / 60000 // 1분 마다 갱신되는 데이터 형태
-    for(var i = 0; i < minutes; i ++){
+    for(var i = 0; i < minutes+1; i ++){
         var newDate = 
             data.map(function(node){
                 var newNode = app.map.wrappers.inputMarkerWrapper.moveNode(node) 

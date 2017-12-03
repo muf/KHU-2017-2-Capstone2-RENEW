@@ -67,7 +67,7 @@ function applyInputData(){
     end = new Date(service.serviceEndDate)
     var diff = end.getTime() - start.getTime()
     var minutes = diff / 60000 // 1분 마다 갱신되는 데이터 형태
-    for(var i = 0; i < minutes; i ++){
+    for(var i = 0; i < minutes+1; i ++){
         var newDate = 
             data.map(function(node){
                 var newNode = app.map.wrappers.inputMarkerWrapper.moveNode(node) 
@@ -126,11 +126,18 @@ function addTableEvents(){
             var drone = drones[i]
             app.map.wrappers.droneMarkerWrapper.addMarker(drone)
         }
-        dataList[index].drones.forEach(drone=>{
-            drone.nodes.forEach(node=>{
+        for(var i = 0; i <service.drone.list.length; i++){
+            var nodes = drones[i].nodes
+            nodes.forEach(node=>{
                 app.map.wrappers.droneClusterMarkerWrapper.addMarker(node)
             })
-        })
+        }
+        // dataList[index].drones.forEach(drone=>{
+        //     drone.nodes.forEach(node=>{
+        //         if(node.group!= -1)
+        //         app.map.wrappers.droneClusterMarkerWrapper.addMarker(node)
+        //     })
+        // })
 
       })
   }
