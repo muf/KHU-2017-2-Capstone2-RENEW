@@ -1,5 +1,6 @@
 var async = require('async')
 var request = require('request')
+var mcmfAGL = require('./mcmf.js')
 var util = {
     realLatMeter : function(meter){
         return meter * 0.000008996
@@ -420,12 +421,14 @@ function selectingDrones(rawList,callback){
         // console.log("nodeDensityWeight:"+nodeDensityDistWeight)ㅇ
         x.weight = Number(assignedNodeWeight + nodeDensityCountWeight + nodeDensityDistWeight)// 0 ~ 100 arctan 그래프 활용하자.
     })
-    // ㅋㅋㅋㅋㅋㅋㅋ sort가 비동기였네 
+    // sort가 Promise 하지 않아서 마치 비동기 처럼 동작.. sort가 다 완료 되지 않아도 다음으로 넘어가는 문제가 있다. async.sort로 대체.. 
     async.sortBy(drones, function(x, callback) {
-        callback(null, x.weight);
+        callback(null, x.weight*-1);
     }, function(err,result) {
         // return rawList
-        callback(rawList)
+        rawList.drones = result
+
+        callback(mcmf(rawList))
     });
     
 }
@@ -459,40 +462,9 @@ function initArray(len, val){
     }
     return list
 }
-function mcmf(jobs, drones){
-    var n = drones.length;
-    var m = jobs.length
-    var vt = initArray(n+m+2, 0)
-    var pv = initArray(n+m+2, -1)
-    var pe = initArray(n+m+2, -1)
-    var worker = 5, job = 5
-    
-    for(var i = 0; i < drones.length; i++){
-        for(var j = 0; i < job.length; i++){
-            vt.push({
-                v: i,
-                cost: -1 * util.distanceTo(jobs[0].position.lat, jobs[0].position.lng, ),
-                cap: 1,
-                rev: vt.length - 1
-            })
-        }
-    }
-    var vt = []; // vector<vector<Edge>>
-    var pv = [], pe = []; // vector<int>
-    var src = worker + job
-    var sink = worker + job + 1
-    for(i=0; i<n; i++){
-        
-    }
-/*
-5 5
-2 1 3 2 2
-1 1 5
-2 2 1 3 7
-3 3 9 4 9 5 9
-1 1 0
- */
-
+function mcmf(rawList){
+    mcmfAGL.main(rawList)
+    return rawList
 }
 module.exports.mcmf = mcmf
 module.exports.util = util

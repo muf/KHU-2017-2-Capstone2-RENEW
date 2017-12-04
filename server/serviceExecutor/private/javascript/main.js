@@ -210,7 +210,6 @@ function objToStrMap(obj) {
 function controlDrones(result, callback){
     console.log("controll Drones")
     // 드론 3대.. 이동해야하는 위치도 3군데.. 가장 가까운 드론을 우선 배치하는게 맞음.
-    // 즉 n개 자리. n개 드론. n!... 아놔 이건 어떡하지 ㅋㅋㅋ 모르는척 할까.. mcmf로 해결 가능 나중에 임베딩해서 쓰자. 일단 패스
     // result = logic.mcmf(result.drones.slice(0,3), service.drone.list)
     var i = 0;
     var index = 0;
